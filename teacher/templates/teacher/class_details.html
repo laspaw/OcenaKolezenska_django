@@ -1,0 +1,25 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <a href="{% url 'teacher:list_classes' %}">powrót do listy klas</a>
+        <br>
+        <h1>Szczegóły klasy:</h1>
+        <ul>
+            <li>{{ name }}</li>
+            <li>{{ description }}</li>
+            <li>{{ ext_description }}</li>
+            <li>{{ is_active }}</li>
+            <li>{{ created_at }}</li>
+            <li>{{ modified_at }}</li>
+        </ul>
+        <br>
+        <h1>uczniowie:</h1>
+        <ul>
+            {% for student in students %}
+                <li>{{ student }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

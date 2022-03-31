@@ -1,0 +1,69 @@
+[
+{
+  "model": "teacher.grade",
+  "pk": 1,
+  "fields": {
+    "caption": "naganna",
+    "int_value": 1,
+    "txt_color": null,
+    "bg_color": null,
+    "gradescale": 1
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 2,
+  "fields": {
+    "caption": "nieodpowiednia",
+    "int_value": 2,
+    "txt_color": null,
+    "bg_color": null,
+    "gradescale": 1
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 3,
+  "fields": {
+    "caption": "poprawna",
+    "int_value": 3,
+    "txt_color": null,
+    "bg_color": null,
+    "gradescale": 1
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 4,
+  "fields": {
+    "caption": "dobra",
+    "int_value": 4,
+    "txt_color": null,
+    "bg_color": null,
+    "gradescale": 1
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 5,
+  "fields": {
+    "caption": "bardzo dobra",
+    "int_value": 5,
+    "txt_color": null,
+    "bg_color": null,
+    "gradescale": 1
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 6,
+  "fields": {
+    "caption": "wzorowa",
+    "int_value": 6,
+    "txt_color": null,
+    "bg_color": null,
+    "gradescale": 1
+  }
+}
+]
+

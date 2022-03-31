@@ -1,0 +1,20 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$320000$EQVuKpIotV9UbyOcC9W4UH$2dGT+s7sVdqUgKWFXLd5aBk+Qji8TrtZrr4aKmy/lPM=",
+    "last_login": "2022-03-13T11:52:42.266Z",
+    "is_superuser": true,
+    "username": "pawel",
+    "first_name": "",
+    "last_name": "",
+    "email": "laspaw@tlen.pl",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2022-03-02T11:36:15.954Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

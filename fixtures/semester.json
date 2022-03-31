@@ -1,0 +1,702 @@
+[
+{
+	"model": "teacher.semester",
+	"pk": 1,
+	"fields": {
+		"name": "2020/21 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 2,
+	"fields": {
+		"name": "2020/21 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 3,
+	"fields": {
+		"name": "2021/22 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 4,
+	"fields": {
+		"name": "2021/22 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 5,
+	"fields": {
+		"name": "2022/23 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 6,
+	"fields": {
+		"name": "2022/23 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 7,
+	"fields": {
+		"name": "2023/24 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 8,
+	"fields": {
+		"name": "2023/24 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 9,
+	"fields": {
+		"name": "2024/25 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 10,
+	"fields": {
+		"name": "2024/25 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 11,
+	"fields": {
+		"name": "2025/26 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 12,
+	"fields": {
+		"name": "2025/26 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 13,
+	"fields": {
+		"name": "2026/27 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 14,
+	"fields": {
+		"name": "2026/27 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 15,
+	"fields": {
+		"name": "2027/28 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 16,
+	"fields": {
+		"name": "2027/28 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 17,
+	"fields": {
+		"name": "2028/29 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 18,
+	"fields": {
+		"name": "2028/29 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 19,
+	"fields": {
+		"name": "2029/30 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 20,
+	"fields": {
+		"name": "2029/30 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 21,
+	"fields": {
+		"name": "2030/31 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 22,
+	"fields": {
+		"name": "2030/31 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 23,
+	"fields": {
+		"name": "2031/32 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 24,
+	"fields": {
+		"name": "2031/32 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 25,
+	"fields": {
+		"name": "2032/33 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 26,
+	"fields": {
+		"name": "2032/33 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 27,
+	"fields": {
+		"name": "2033/34 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 28,
+	"fields": {
+		"name": "2033/34 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 29,
+	"fields": {
+		"name": "2034/35 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 30,
+	"fields": {
+		"name": "2034/35 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 31,
+	"fields": {
+		"name": "2035/36 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 32,
+	"fields": {
+		"name": "2035/36 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 33,
+	"fields": {
+		"name": "2036/37 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 34,
+	"fields": {
+		"name": "2036/37 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 35,
+	"fields": {
+		"name": "2037/38 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 36,
+	"fields": {
+		"name": "2037/38 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 37,
+	"fields": {
+		"name": "2038/39 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 38,
+	"fields": {
+		"name": "2038/39 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 39,
+	"fields": {
+		"name": "2039/40 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 40,
+	"fields": {
+		"name": "2039/40 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 41,
+	"fields": {
+		"name": "2040/41 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 42,
+	"fields": {
+		"name": "2040/41 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 43,
+	"fields": {
+		"name": "2041/42 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 44,
+	"fields": {
+		"name": "2041/42 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 45,
+	"fields": {
+		"name": "2042/43 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 46,
+	"fields": {
+		"name": "2042/43 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 47,
+	"fields": {
+		"name": "2043/44 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 48,
+	"fields": {
+		"name": "2043/44 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 49,
+	"fields": {
+		"name": "2044/45 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 50,
+	"fields": {
+		"name": "2044/45 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 51,
+	"fields": {
+		"name": "2045/46 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 52,
+	"fields": {
+		"name": "2045/46 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 53,
+	"fields": {
+		"name": "2046/47 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 54,
+	"fields": {
+		"name": "2046/47 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 55,
+	"fields": {
+		"name": "2047/48 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 56,
+	"fields": {
+		"name": "2047/48 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 57,
+	"fields": {
+		"name": "2048/49 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 58,
+	"fields": {
+		"name": "2048/49 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 59,
+	"fields": {
+		"name": "2049/50 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 60,
+	"fields": {
+		"name": "2049/50 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 61,
+	"fields": {
+		"name": "2050/51 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 62,
+	"fields": {
+		"name": "2050/51 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 63,
+	"fields": {
+		"name": "2051/52 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 64,
+	"fields": {
+		"name": "2051/52 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 65,
+	"fields": {
+		"name": "2052/53 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 66,
+	"fields": {
+		"name": "2052/53 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 67,
+	"fields": {
+		"name": "2053/54 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 68,
+	"fields": {
+		"name": "2053/54 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 69,
+	"fields": {
+		"name": "2054/55 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 70,
+	"fields": {
+		"name": "2054/55 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 71,
+	"fields": {
+		"name": "2055/56 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 72,
+	"fields": {
+		"name": "2055/56 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 73,
+	"fields": {
+		"name": "2056/57 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 74,
+	"fields": {
+		"name": "2056/57 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 75,
+	"fields": {
+		"name": "2057/58 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 76,
+	"fields": {
+		"name": "2057/58 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 77,
+	"fields": {
+		"name": "2058/59 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 78,
+	"fields": {
+		"name": "2058/59 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 79,
+	"fields": {
+		"name": "2059/60 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 80,
+	"fields": {
+		"name": "2059/60 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 81,
+	"fields": {
+		"name": "2060/61 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 82,
+	"fields": {
+		"name": "2060/61 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 83,
+	"fields": {
+		"name": "2061/62 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 84,
+	"fields": {
+		"name": "2061/62 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 85,
+	"fields": {
+		"name": "2062/63 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 86,
+	"fields": {
+		"name": "2062/63 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 87,
+	"fields": {
+		"name": "2063/64 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 88,
+	"fields": {
+		"name": "2063/64 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 89,
+	"fields": {
+		"name": "2064/65 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 90,
+	"fields": {
+		"name": "2064/65 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 91,
+	"fields": {
+		"name": "2065/66 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 92,
+	"fields": {
+		"name": "2065/66 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 93,
+	"fields": {
+		"name": "2066/67 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 94,
+	"fields": {
+		"name": "2066/67 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 95,
+	"fields": {
+		"name": "2067/68 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 96,
+	"fields": {
+		"name": "2067/68 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 97,
+	"fields": {
+		"name": "2068/69 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 98,
+	"fields": {
+		"name": "2068/69 II"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 99,
+	"fields": {
+		"name": "2069/70 I"
+	}
+},
+{
+	"model": "teacher.semester",
+	"pk": 100,
+	"fields": {
+		"name": "2069/70 II"
+	}
+}
+]

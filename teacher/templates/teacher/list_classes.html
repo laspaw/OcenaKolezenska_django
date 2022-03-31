@@ -1,0 +1,20 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Lista klas:</h1>
+        {% for class in classes_list %}
+            <a href="{% url 'teacher:show_class' class.id %}" class="list-group-item list-group-item-action list-group-item-secondary justify-content-between">
+                <h2>klasa {{ class.class_number }} {{ class.class_letter }}</h2>
+            </a>
+        {% endfor %}
+        <a href="{% url 'teacher:add_class' %}" class="list-group-item list-group-item-action list-group-item-secondary justify-content-between">
+            <h2>+ utwórz nową klasę</h2>
+        </a>
+    </div>
+{% endblock %}
+

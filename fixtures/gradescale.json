@@ -1,0 +1,9 @@
+[
+{
+  "model": "teacher.gradescale",
+  "pk": 1,
+  "fields": {
+    "caption": "skala szkolna od nagannej do wzorowej"
+  }
+}
+]

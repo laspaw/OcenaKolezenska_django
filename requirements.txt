@@ -1,0 +1,8 @@
+django
+django_extensions
+django-colorfield
+django-crispy-forms
+ipython
+pytest
+Faker
+pendulum
