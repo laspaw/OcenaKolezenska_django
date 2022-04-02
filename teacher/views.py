@@ -14,7 +14,7 @@ def list_classes(request):
 def add_class(request):
     data = dict(email="lalala", title="Django", content="Forms", send_to_me="X")
     form = ContactForm(data)
-    return render(request, "teacher/add_class.html", {"form": form.as_ul()})
+    return render(request, "teacher/add_class.html", {"form": form.as_p()})
 
 
 def show_class(request, class_id):

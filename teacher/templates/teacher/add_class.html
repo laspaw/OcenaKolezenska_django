@@ -4,8 +4,9 @@
 {% block content %}
     <div class="container">
         <form method="POST">
-{#            {% csrf_token %}#}
+            {% csrf_token %}
             {{ form }}
+            <input type="submit" value="add">
         </form>
     </div>
 {% endblock %}
