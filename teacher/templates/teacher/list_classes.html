@@ -8,8 +8,17 @@
     <div class="container">
         <h1>Lista klas:</h1>
         {% for class in classes_list %}
-            <a href="{% url 'teacher:show_class' class.id %}" class="list-group-item list-group-item-action list-group-item-secondary justify-content-between">
-                <h2>klasa {{ class.class_number }} {{ class.class_letter }}</h2>
+            <a href="{% url 'teacher:show_class' class.id %}" class="list-group-item list-group-item-action list-group-item-secondary">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h2>klasa {{ class.class_number }} {{ class.class_letter }}</h2>
+                    </div>
+                    <div>
+                        <form action="{% url 'teacher:delete_class' class.id %}" method="get" class="badge">
+                            <input type="submit" value="USUŃ" name="Submit"/>
+                        </form>
+                    </div>
+                </div>
             </a>
         {% endfor %}
         <a href="{% url 'teacher:add_class' %}" class="list-group-item list-group-item-action list-group-item-secondary justify-content-between">
@@ -18,3 +27,19 @@
     </div>
 {% endblock %}
 
+{#  <li class="list-group-item d-flex justify-content-between align-items-center">#}
+{#    A list item#}
+{#    <span class="badge bg-primary rounded-pill">14</span>#}
+{#  </li>#}
+{# class="d-flex justify-content-between"#}
+
+{#                <table><tr>#}
+{#                    <td>#}
+{#                        <h2>klasa {{ class.class_number }} {{ class.class_letter }}</h2>#}
+{#                    </td>#}
+{#                    <td>#}
+{#                        <form action="/my/link/location" method="get" class="badge ">#}
+{#                            <input type="submit" value="USUŃ" name="Submit" id="frm1_submit" />#}
+{#                        </form>#}
+{#                    </td>#}
+{#                </tr></table>#}

@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Class
-from .forms import ContactForm
+from .forms import AddClassForm
 
 
 # Create your views here.
@@ -12,9 +12,26 @@ def list_classes(request):
 
 
 def add_class(request):
-    data = dict(email="lalala", title="Django", content="Forms", send_to_me="X")
-    form = ContactForm(data)
-    return render(request, "teacher/add_class.html", {"form": form.as_p()})
+    if request.method == "POST":
+        data = {
+            "class_number": request.POST['class_number'],
+            "class_letter": request.POST['class_letter'],
+            "description": request.POST['description'],
+            "school": request.POST['school'],
+            "semester_id": 1,
+            "teacher_id": 1,
+        }
+        classobj = Class.objects.create(**data)
+        #        return render(request, f"teacher/class_details.html/{classobj.id}")
+        return redirect('teacher:show_class', class_id=classobj.id)
+    else:
+        form = AddClassForm()
+        return render(request, "teacher/add_class.html", {"form": form.as_p()})
+
+
+def delete_class(request, class_id):
+    Class.objects.get(pk=class_id).delete()
+    return redirect('teacher:list_classes')
 
 
 def show_class(request, class_id):
