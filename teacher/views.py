@@ -16,7 +16,6 @@ def add_class(request):
         data = {
             "class_number": request.POST['class_number'],
             "class_letter": request.POST['class_letter'],
-            "description": request.POST['description'],
             "school": request.POST['school'],
             "semester_id": 1,
             "teacher_id": 1,
@@ -26,7 +25,7 @@ def add_class(request):
         return redirect('teacher:show_class', class_id=classobj.id)
     else:
         form = AddClassForm()
-        return render(request, "teacher/add_class.html", {"form": form.as_p()})
+        return render(request, "teacher/add_class.html", {"form": form})
 
 
 def delete_class(request, class_id):
@@ -38,9 +37,9 @@ def show_class(request, class_id):
     myclass = Class.objects.get(pk=class_id)
 
     context = {
+        'class_id': class_id,
         'class_number': myclass.class_number,
         'class_letter': myclass.class_letter,
-        'description': myclass.description,
         'school': myclass.school,
     }
     return render(request, "teacher/class_details.html", context)

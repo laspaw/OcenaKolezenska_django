@@ -29,7 +29,6 @@ class Teacher(models.Model):
 class Class(models.Model):
     class_number = models.IntegerField()
     class_letter = models.CharField(max_length=1)
-    description = models.TextField()
     school = models.CharField(max_length=64, null=True)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, related_name='class2semester')
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, related_name='class2teacher')

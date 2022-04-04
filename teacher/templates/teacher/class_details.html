@@ -3,23 +3,34 @@
 
 {% block content %}
     <div class="container">
-        <a href="{% url 'teacher:list_classes' %}">powrót do listy klas</a>
         <br>
-        <h1>Szczegóły klasy:</h1>
-        <ul>
-            <li>{{ name }}</li>
-            <li>{{ description }}</li>
-            <li>{{ ext_description }}</li>
-            <li>{{ is_active }}</li>
-            <li>{{ created_at }}</li>
-            <li>{{ modified_at }}</li>
-        </ul>
-        <br>
-        <h1>uczniowie:</h1>
-        <ul>
-            {% for student in students %}
-                <li>{{ student }}</li>
-            {% endfor %}
-        </ul>
+        <table class="table">
+          <thead>
+            <tr>
+                <th style="width: 5%"></th>
+                <th scope="col"><h2>Szczegóły klasy:</h2></th>
+                <th>
+                    <a href="{% url 'teacher:list_classes' %}">
+                        <button type="button" class="btn btn-warning">Powrót do listy klas</button></a>
+                    <a href="{% url 'teacher:list_classes' %}">
+                        <button type="button" class="btn btn-warning">Modyfikuj</button></a>
+                    <a href="{% url 'teacher:delete_class' class_id %}">
+                        <button type="button" class="btn btn-warning">Usuń</button></a>
+                </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">klasa:</th>
+              <td>{{ class_number }}{{ class_letter }} ({{ semester }})</td>
+            </tr>
+            <tr>
+              <th scope="row">szkoła:</th>
+              <td>{{ school }}</td>
+            </tr>
+
+        </table>
+
+
     </div>
 {% endblock %}
