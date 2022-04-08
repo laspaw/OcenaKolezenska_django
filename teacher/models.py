@@ -19,6 +19,16 @@ class Semester(models.Model):
                 school_semester = 'II'
         return school_year + " " + school_semester
 
+    @staticmethod
+    def get_semester_choices():
+        temp_list2 = []
+        semesters = Semester.objects.all()[:20]
+        for semester in semesters:
+            if semester.name == Semester.get_semester_caption(pendulum.now()):
+                temp_list1 = [(semester.id, 'bieżący ' + semester.name)]
+            temp_list2.append((semester.id, semester.name))
+        return tuple(temp_list1 + temp_list2)
+
 
 class Teacher(models.Model):
     email = models.EmailField(max_length=128, unique=True)
@@ -69,7 +79,6 @@ class Grade(models.Model):
 
 class Gradescale(models.Model):
     caption = models.CharField(max_length=32)
-
 
 # abstract class timestaped:
 #     created_at = models.DateTimeField(auto_now_add=True)

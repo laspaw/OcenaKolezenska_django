@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Class
+from .models import Class, Semester
 from .forms import AddClassForm
 
 
@@ -17,7 +17,7 @@ def add_class(request):
             "class_number": request.POST['class_number'],
             "class_letter": request.POST['class_letter'],
             "school": request.POST['school'],
-            "semester_id": 1,
+            "semester_id": request.POST['semester'],
             "teacher_id": 1,
         }
         classobj = Class.objects.create(**data)
@@ -40,6 +40,7 @@ def show_class(request, class_id):
         'class_id': class_id,
         'class_number': myclass.class_number,
         'class_letter': myclass.class_letter,
+        'semester': myclass.semester.name,
         'school': myclass.school,
     }
     return render(request, "teacher/class_details.html", context)
