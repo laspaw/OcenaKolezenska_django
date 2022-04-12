@@ -16,12 +16,13 @@ Including another URLconf
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import list_classes, show_class, add_class, delete_class
+from .views import *
 
 app_name = "teacher"
 urlpatterns = [
-    path('class/<int:class_id>', show_class, name="show_class"),
+    path('show_class/<int:class_id>', show_class, name="show_class"),
     path('add_class/', add_class, name="add_class"),
+    path('add_students/<int:class_id>', add_students, name="add_students"),
     path('delete_class/<int:class_id>', delete_class, name="delete_class"),
     path('', list_classes, name="list_classes"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

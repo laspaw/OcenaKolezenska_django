@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Class, Semester
-from .forms import AddClassForm
+from .forms import *
 
 
 # Create your views here.
@@ -9,6 +9,11 @@ from .forms import AddClassForm
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
     return render(request, "teacher/list_classes.html", context)
+
+
+def delete_class(request, class_id):
+    Class.objects.get(pk=class_id).delete()
+    return redirect('teacher:list_classes')
 
 
 def add_class(request):
@@ -21,16 +26,19 @@ def add_class(request):
             "teacher_id": 1,
         }
         classobj = Class.objects.create(**data)
-        #        return render(request, f"teacher/class_details.html/{classobj.id}")
-        return redirect('teacher:show_class', class_id=classobj.id)
-    else:
-        form = AddClassForm()
-        return render(request, "teacher/add_class.html", {"form": form})
+        return redirect('teacher:add_students', class_id=classobj.id)
+    form = AddClassForm()
+    return render(request, "teacher/add_class.html", {"form": form})
 
 
-def delete_class(request, class_id):
-    Class.objects.get(pk=class_id).delete()
-    return redirect('teacher:list_classes')
+def add_students(request, class_id):
+    debug = ''
+    form = AddStudentsForm()
+    if request.method == "POST":
+        debug = request.POST['students']
+        if 'save' in request.POST:
+            return redirect('teacher:show_class', class_id=class_id)
+    return render(request, "teacher/add_students.html", {"form": form, 'debug': debug})
 
 
 def show_class(request, class_id):
@@ -43,4 +51,4 @@ def show_class(request, class_id):
         'semester': myclass.semester.name,
         'school': myclass.school,
     }
-    return render(request, "teacher/class_details.html", context)
+    return render(request, "teacher/show_class.html", context)
