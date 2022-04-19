@@ -60,6 +60,20 @@ class Student(models.Model):
     name = models.CharField(max_length=32)
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='student2class')
 
+    @staticmethod
+    def cleanup_and_convert_review_students_text_to_list(review_students_text: str, mask_last_name: bool):
+        review_students_list = review_students_text.split('\n')
+        return_list = []
+        temp = None
+        for list_item in review_students_list:
+            temp = list_item.strip().split(' ')
+            if len(temp) < 2:
+                continue
+            if mask_last_name:
+                temp[0] = temp[0][:1] + '*' * (len(temp[0]) - 1)
+            return_list.append(temp[1] + ' ' + temp[0])
+        return return_list
+
 
 class Answer(models.Model):
     answer_timestamp = models.DateTimeField(auto_now_add=True)

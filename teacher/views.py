@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Class, Semester
+from .models import Class, Semester, Student
 from .forms import *
 
 
@@ -32,13 +32,21 @@ def add_class(request):
 
 
 def add_students(request, class_id):
-    debug = ''
-    form = AddStudentsForm()
+    review_students_text = ''
+    review_students_list = ['po wprowadzeniu listy uczniów kliknij w <Sprawdź>',
+                            'w tym oknie pojawi się lista uczniów',
+                            'kiedy ta lista będzie poprawna, kliknij w<Zapisz>',
+                            ]
     if request.method == "POST":
-        debug = request.POST['students']
+        form = AddStudentsForm(data=request.POST)
+        review_students_text = request.POST['students']
+        review_students_list = Student.cleanup_and_convert_review_students_text_to_list(
+            review_students_text, request.POST.get('mask_lastnames', False))
         if 'save' in request.POST:
             return redirect('teacher:show_class', class_id=class_id)
-    return render(request, "teacher/add_students.html", {"form": form, 'debug': debug})
+    else:
+        form = AddStudentsForm()
+    return render(request, "teacher/add_students.html", {"form": form, 'review_students_list': review_students_list})
 
 
 def show_class(request, class_id):

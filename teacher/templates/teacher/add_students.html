@@ -2,9 +2,30 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="container">
-        {{ debug }}
-        {% crispy form %}
+<div class="d-flex flex-row container">
+  <div class="col-md-6">{% crispy form form.helper %}</div>
+  <div class="col-md-6">
+
+        <table class="table table-sm">
+          <thead>
+            <tr>
+                <th style="width: 5%">
+                   Lp. Imię i nazwisko ucznia
+                </th>
+            </tr>
+          </thead>
+          <tbody>
+                <tr>
+                  <td></td>
+                </tr>
+          </tbody>
+        </table>
+        <ol>
+            {% for student in review_students_list %}
+                <li>{{ student }}</li>
+            {% endfor %}
+        </ol>
     </div>
+</div>
 {% endblock %}
 

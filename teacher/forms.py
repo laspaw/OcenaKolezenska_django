@@ -5,11 +5,14 @@ from .views import Semester
 
 
 class AddClassForm(forms.Form):
-    semester = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control dropdown-toggle'}), choices=Semester.get_semester_choices(), label='wybierz semestr')
-    class_number = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='cyfra klasy, np: 1    :')
-    class_letter = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label='litera klasy, np: A    :')
-    school = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False, label='(opcjonalne) szkoła, np: ZSP Smolec')
-
+    semester = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control dropdown-toggle'}),
+                                 choices=Semester.get_semester_choices(), label='wybierz semestr')
+    class_number = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'np: 1'}),
+                                    label='cyfra klasy:')
+    class_letter = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'np: A'}),
+                                   label='litera klasy:')
+    school = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'np: ZSP Smolec'}),
+                             required=False, label='szkoła:')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -35,6 +38,8 @@ class AddClassForm(forms.Form):
 
 class AddStudentsForm(forms.Form):
     students = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), label='uczniowie: ')
+    mask_lastnames = forms.BooleanField(widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+                                        required=False, initial=True, label='maskuj nazwiska dla zgodności z RODO')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -44,13 +49,13 @@ class AddStudentsForm(forms.Form):
         self.helper.layout = Layout(
             HTML('Wpisz ręcznie lub wklej z Librusa listę uczniów w formacie: Nazwisko Imię<br>'),
             HTML('W jednej linii jeden uczeń. Wszystkie znaki po imieniu zostaną zignorowane.<br>'),
-            HTML('(na ten moment, nie przejmuj się RODO)'),
+            HTML('<br>'),
 
-            Row('students', css_class='form-group col-md-5 mb-0'),
+            Row('students', css_class='form-group col-md-11 mb-0'),
+            Row('mask_lastnames'),
             HTML('<br>'),
             ButtonHolder(
                 Submit('check', 'Sprawdź', css_class='btn btn-warning'),
                 Submit('save', 'Zapisz', css_class='btn btn-warning'),
                 css_class="d-flex justify-content-around"),
-
         )
