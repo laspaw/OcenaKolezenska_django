@@ -7,12 +7,13 @@ from .views import Semester
 class AddClassForm(forms.Form):
     semester = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control dropdown-toggle'}),
                                  choices=Semester.get_semester_choices(), label='wybierz semestr')
-    class_number = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'np: 1'}),
+    class_number = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'np: 1'}),
                                     label='cyfra klasy:')
-    class_letter = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'np: A'}),
+    class_letter = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'np: A'}),
                                    label='litera klasy:')
-    school = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder':'np: ZSP Smolec'}),
+    school = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'np: ZSP Smolec'}),
                              required=False, label='szkoła:')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -47,9 +48,15 @@ class AddStudentsForm(forms.Form):
         self.helper.form_method = 'post'
 
         self.helper.layout = Layout(
-            HTML('Wpisz ręcznie lub wklej z Librusa listę uczniów w formacie: Nazwisko Imię<br>'),
-            HTML('W jednej linii jeden uczeń. Wszystkie znaki po imieniu zostaną zignorowane.<br>'),
-            HTML('<br>'),
+            HTML('''
+        Wpisz listę uczniów w formacie Nazwisko Imię, w każdej linii jeden uczeń.<br>
+        Można też przekopiować listę z Librusa:<br>
+        - przejdź do Wiadomości/Napisz/Uczniowie<br>
+        - rozwiń listę uczniów klasy, którą zamierzasz dodać<br>
+        - za pomocą myszki skopiuj wszyskich uczniów, następnie wklej w oknie poniżej<br>
+        (można zignorować numery w dzienniku, zostaną usunięte automatycznie)<br>
+        <br>
+        '''),
 
             Row('students', css_class='form-group col-md-11 mb-0'),
             Row('mask_lastnames'),
