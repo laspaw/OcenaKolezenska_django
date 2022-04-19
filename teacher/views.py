@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Class, Semester, Student
+from .models import *
 from .forms import *
 
 
@@ -32,7 +32,6 @@ def add_class(request):
 
 
 def add_students(request, class_id):
-    review_students_text = ''
     review_students_list = ['po wprowadzeniu listy uczniów kliknij w <Sprawdź>',
                             'w tym oknie pojawi się lista uczniów',
                             'kiedy ta lista będzie poprawna, kliknij w<Zapisz>',
@@ -43,6 +42,8 @@ def add_students(request, class_id):
         review_students_list = Student.cleanup_and_convert_review_students_text_to_list(
             review_students_text, request.POST.get('mask_lastnames', False))
         if 'save' in request.POST:
+            for student in review_students_list:
+                Student.objects.create(name=student, classid_id=class_id)
             return redirect('teacher:show_class', class_id=class_id)
     else:
         form = AddStudentsForm()

@@ -54,7 +54,7 @@ class AddStudentsForm(forms.Form):
         - przejdź do Wiadomości/Napisz/Uczniowie<br>
         - rozwiń listę uczniów klasy, którą zamierzasz dodać<br>
         - za pomocą myszki skopiuj wszyskich uczniów, następnie wklej w oknie poniżej<br>
-        (można zignorować numery w dzienniku, zostaną usunięte automatycznie)<br>
+        (numery w dzienniku zostaną usunięte automatycznie)<br>
         <br>
         '''),
 
