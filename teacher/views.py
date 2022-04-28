@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from .models import *
 from .forms import *
 
-
-# Create your views here.
 
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
@@ -31,6 +28,21 @@ def add_class(request):
     return render(request, "teacher/add_class.html", {"form": form})
 
 
+def show_class(request, class_id):
+    my_class = Class.objects.get(pk=class_id)
+    students_queryset = Student.objects.filter(classid_id=class_id)
+    students = [student.name for student in students_queryset]
+    context = {
+        'class_id': class_id,
+        'class_number': my_class.class_number,
+        'class_letter': my_class.class_letter,
+        'semester': my_class.semester.name,
+        'school': my_class.school,
+        'students': students,
+    }
+    return render(request, "teacher/show_class.html", context)
+
+
 def add_students(request, class_id):
     review_students_list = ['po wprowadzeniu listy uczniów kliknij w <Sprawdź>',
                             'w tym oknie pojawi się lista uczniów',
@@ -47,17 +59,29 @@ def add_students(request, class_id):
             return redirect('teacher:show_class', class_id=class_id)
     else:
         form = AddStudentsForm()
-    return render(request, "teacher/add_students.html", {"form": form, 'review_students_list': review_students_list})
+    return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list})
 
 
-def show_class(request, class_id):
-    myclass = Class.objects.get(pk=class_id)
+def add_questionnaire(request, class_id):
+    questionnaire_id = 1
+    if request.method == "POST":
+        if 'save' in request.POST:
+            return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id)
+        else:
+            return redirect('teacher:show_class', class_id=class_id)
+    else:
+        form = AddQuestionnaireForm()
+        return render(request, "teacher/add_questionnaire.html", {'form': form})
 
-    context = {
-        'class_id': class_id,
-        'class_number': myclass.class_number,
-        'class_letter': myclass.class_letter,
-        'semester': myclass.semester.name,
-        'school': myclass.school,
-    }
-    return render(request, "teacher/show_class.html", context)
+
+def show_questionnaire(request, questionnaire_id):
+    return render(request, "teacher/show_questionnaire.html", {'questionnaire_id': questionnaire_id})
+
+# def questionnaire(request, class_id):
+#     my_questionnaire = Questionnaire.objects.get(pk=class_id)
+#     context = {
+#         'class_id': class_id,
+#         'class_number': my_questionnaire.class_number,
+#
+#     }
+#     return render(request, "teacher/show_class.html", context)

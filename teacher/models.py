@@ -21,6 +21,7 @@ class Semester(models.Model):
 
     @staticmethod
     def get_semester_choices():
+        temp_list1 = []
         temp_list2 = []
         semesters = Semester.objects.all()[:20]
         for semester in semesters:
@@ -39,7 +40,7 @@ class Teacher(models.Model):
 class Class(models.Model):
     class_number = models.IntegerField()
     class_letter = models.CharField(max_length=1)
-    school = models.CharField(max_length=64, null=True)
+    school = models.CharField(max_length=128, null=True)
     semester = models.ForeignKey('Semester', on_delete=models.CASCADE, related_name='class2semester')
     teacher = models.ForeignKey('Teacher', on_delete=models.CASCADE, related_name='class2teacher')
     created_from = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='class2created_from', null=True)
@@ -49,9 +50,8 @@ class Class(models.Model):
 
 
 class Questionnaire(models.Model):
-    ext_description = models.TextField(null=True)
     deadline = models.DateTimeField(null=True)
-    is_stats_processed = models.BooleanField(default=True)
+    is_stats_processed = models.BooleanField(default=False)
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='questionnaire2gradescale')
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='questionnaire2class')
 
@@ -92,7 +92,11 @@ class Grade(models.Model):
 
 
 class Gradescale(models.Model):
-    caption = models.CharField(max_length=32)
+    @staticmethod
+    def get_gradescale_choices():
+        return ((gradescale.id, gradescale.caption,) for gradescale in Gradescale.objects.all())
+
+    caption = models.CharField(max_length=64)
 
 # abstract class timestaped:
 #     created_at = models.DateTimeField(auto_now_add=True)

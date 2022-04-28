@@ -64,6 +64,39 @@
     "bg_color": null,
     "gradescale": 1
   }
+},
+{
+  "model": "teacher.grade",
+  "pk": 7,
+  "fields": {
+    "caption": "R",
+    "int_value": 1,
+    "txt_color": "#000000",
+    "bg_color": "#e8173a",
+    "gradescale": 2
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 8,
+  "fields": {
+    "caption": "Y",
+    "int_value": 2,
+    "txt_color": "#000000",
+    "bg_color": "#ede845",
+    "gradescale": 2
+  }
+},
+{
+  "model": "teacher.grade",
+  "pk": 9,
+  "fields": {
+    "caption": "G",
+    "int_value": 3,
+    "txt_color": "#000000",
+    "bg_color": "#4ec206",
+    "gradescale": 2
+  }
 }
 ]
 

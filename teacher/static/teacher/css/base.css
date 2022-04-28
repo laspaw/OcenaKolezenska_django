@@ -6,18 +6,6 @@ body {
    background-color: #555150
 }
 
-.btn_width {
-   width: 200px;
+.disabled {
+    color: #dddddd
 }
-
-/*table {*/
-/*    border: 0px solid black;*/
-/*    width: 80%;*/
-/*    height: 100%;*/
-/*    margin-left: auto;*/
-/*    margin-right: auto;*/
-/*}*/
-
-/*td {*/
-/*    border: 0px solid black;*/
-/*}*/

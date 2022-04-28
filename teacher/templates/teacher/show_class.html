@@ -6,31 +6,50 @@
         <br>
 
         <table class="table">
-          <thead>
+            <thead>
             <tr>
-                <th style="width: 5%"></th>
+                <th style="width: 10%"></th>
                 <th scope="col"><h2>Szczegóły klasy:</h2></th>
                 <th>
-                    <a href="{% url 'teacher:list_classes' %}">
-                        <button type="button" class="btn btn-warning">Powrót do listy klas</button></a>
-                    <a href="{% url 'teacher:list_classes' %}">
-                        <button type="button" class="btn btn-warning">Modyfikuj</button></a>
-                    <a href="{% url 'teacher:delete_class' class_id %}">
-                        <button type="button" class="btn btn-warning">Usuń</button></a>
+                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Powrót do listy klas</button></a>
+                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Modyfikuj</button></a>
+                    <a href="{% url 'teacher:delete_class' class_id %}"><button type="button" class="btn btn-warning">Usuń</button></a>
                 </th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <tr>
-              <td>klasa:</td>
-              <td>{{ class_number }}{{ class_letter }} (semestr: {{ semester }})</td>
+                <td>klasa:</td>
+                <td>{{ class_number }}{{ class_letter }} (semestr: {{ semester }})</td>
             </tr>
             <tr>
-              <td>szkoła:</td>
-              <td>{{ school }}</td>
+                <td>szkoła:</td>
+                <td>
+                    {% if school|length %}
+                        {{ school }}
+                    {% else %}
+                        <i>nazwa szkoły nie została podana</i>
+                    {% endif %}
+                </td>
             </tr>
-          </tbody>
+            <tr>
+                <td>lista uczniów:</td>
+                <td>
+                    {% if students|length > 0 %}
+                        <ol>
+                            {% for student in students %}
+                                <li>{{ student }}</li>
+                            {% endfor %}
+                        </ol>
+                    {% else %}
+                        <i>do tej klasy nie dodano żadnego ucznia</i>
+                    {% endif %}
+                </td>
+            </tr>
+            </tbody>
         </table>
-
+        <a href="{% url 'teacher:add_questionnaire' class_id %}">
+            <button type="button" class="btn btn-warning">Utwórz ankietę</button>
+        </a>
     </div>
 {% endblock %}

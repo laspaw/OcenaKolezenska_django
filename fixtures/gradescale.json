@@ -3,7 +3,18 @@
   "model": "teacher.gradescale",
   "pk": 1,
   "fields": {
-    "caption": "skala szkolna od nagannej do wzorowej"
+    "caption": "standardowa skala szkolna, od nagannej do wzorowej"
+  }
+},
+{
+  "model": "teacher.gradescale",
+  "pk": 2,
+  "fields": {
+    "caption": "skala 3-y stopniowa, czerwony, żółty, zielony"
   }
 }
 ]
+
+
+
+
