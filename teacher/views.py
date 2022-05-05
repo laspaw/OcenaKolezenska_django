@@ -1,3 +1,5 @@
+import string
+import random
 from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
@@ -22,8 +24,8 @@ def add_class(request):
             "semester_id": request.POST['semester'],
             "teacher_id": 1,
         }
-        classobj = Class.objects.create(**data)
-        return redirect('teacher:add_students', class_id=classobj.id)
+        class_obj = Class.objects.create(**data)
+        return redirect('teacher:add_students', class_id=class_obj.id)
     form = AddClassForm()
     return render(request, "teacher/add_class.html", {"form": form})
 
@@ -62,26 +64,80 @@ def add_students(request, class_id):
     return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list})
 
 
+def delete_questionnaire(request, questionnaire_id):
+    my_questionnaire = Questionnaire.objects.get(pk=questionnaire_id)
+    class_id = Class.objects.get(pk=my_questionnaire.classid_id).id
+    my_questionnaire.delete()
+    return redirect('teacher:show_class', class_id=class_id)
+
+
 def add_questionnaire(request, class_id):
-    questionnaire_id = 1
-    if request.method == "POST":
-        if 'save' in request.POST:
-            return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id)
-        else:
-            return redirect('teacher:show_class', class_id=class_id)
-    else:
-        form = AddQuestionnaireForm()
-        return render(request, "teacher/add_questionnaire.html", {'form': form})
+    questionnaire_id = Questionnaire.objects.filter(classid_id=class_id)
+    if len(questionnaire_id) == 0:
+        if request.method == "POST":
+            if 'save' in request.POST:
+                deadline = request.POST['deadline']
+                if deadline == '':
+                    deadline = None
+                print(deadline)
+                print(type(deadline))
+                data = {
+                    'deadline': deadline,
+                    'message_to_students': request.POST['message_to_students'],
+                    'gradescale_id': request.POST['gradescale'],
+                    'classid_id': class_id
+                }
+                questionnaire_obj = Questionnaire.objects.create(**data)
+                for student in Student.objects.filter(classid_id=class_id):
+                    student.personal_questionnaire_link = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+                    student.save()
+                return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_obj.id)
+            elif 'return' in request.POST:
+                return redirect('teacher:show_class', class_id=class_id)
+        elif request.method == "GET":
+            form = AddQuestionnaireForm()
+            return render(request, "teacher/add_questionnaire.html",
+                          {'form': form, 'class_name': Class.objects.get(pk=class_id)})
+    if len(questionnaire_id) == 1:
+        return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id[0].id)
 
 
 def show_questionnaire(request, questionnaire_id):
-    return render(request, "teacher/show_questionnaire.html", {'questionnaire_id': questionnaire_id})
+    my_questionnaire = Questionnaire.objects.get(pk=questionnaire_id)
+    class_name = Class.objects.get(pk=my_questionnaire.classid_id)
+    students = Student.objects.filter(classid=my_questionnaire.classid_id)
+    # - wyśietlanie linków dla uczniów + QRcode
 
-# def questionnaire(request, class_id):
-#     my_questionnaire = Questionnaire.objects.get(pk=class_id)
-#     context = {
-#         'class_id': class_id,
-#         'class_number': my_questionnaire.class_number,
-#
-#     }
-#     return render(request, "teacher/show_class.html", context)
+    context = {
+        'class_name': class_name,
+        'questionnaire_id': questionnaire_id,
+        'deadline': None if my_questionnaire.deadline is None else my_questionnaire.deadline.strftime('%Y-%d-%m %H:%M'),
+        'message_to_students': my_questionnaire.message_to_students.split('\n'),
+        'gradescale': my_questionnaire.gradescale.caption,
+        'students': students,
+    }
+    return render(request, "teacher/show_questionnaire.html", context)
+
+
+def peronal_questionnaire(request, peronal_questionnaire_id):
+    jeżeli jest ankieta ->
+
+    Student.objects.filter(personal_questionnaire_link=peronal_questionnaire_id)
+
+    my_questionnaire = Questionnaire.objects.get(pk=questionnaire_id)
+    class_name = Class.objects.get(pk=my_questionnaire.classid_id)
+    students = Student.objects.filter(classid=my_questionnaire.classid_id)
+    # - wyśietlanie linków dla uczniów + QRcode
+
+    context = {
+        'class_name': class_name,
+        'questionnaire_id': questionnaire_id,
+        'deadline': None if my_questionnaire.deadline is None else my_questionnaire.deadline.strftime('%Y-%d-%m %H:%M'),
+        'message_to_students': my_questionnaire.message_to_students.split('\n'),
+        'gradescale': my_questionnaire.gradescale.caption,
+        'students': students,
+    }
+    return render(request, "teacher/show_questionnaire.html", context)
+
+
+

@@ -46,19 +46,21 @@ class Class(models.Model):
     created_from = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='class2created_from', null=True)
 
     def __str__(self):
-        return str(self.class_number) + self.class_letter + " (" + self.school + ")"
+        return str(self.class_number) + self.class_letter + (" (" + self.school + ")" if len(self.school) > 0 else '')
 
 
 class Questionnaire(models.Model):
     deadline = models.DateTimeField(null=True)
+    message_to_students = models.TextField(null=True)
     is_stats_processed = models.BooleanField(default=False)
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='questionnaire2gradescale')
-    classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='questionnaire2class')
+    classid = models.ForeignKey("Class", on_delete=models.CASCADE, unique=True, related_name='questionnaire2class')
 
 
 class Student(models.Model):
     name = models.CharField(max_length=32)
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='student2class')
+    personal_questionnaire_link = models.CharField(max_length=128, null=True, unique=True)
 
     @staticmethod
     def cleanup_and_convert_review_students_text_to_list(review_students_text: str, mask_last_name: bool):

@@ -3,6 +3,73 @@
 
 {% block content %}
     <div class="container">
-        show questionnaire {{ questionnaire_id }}
+        <br>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th style="width: 10%"></th>
+                <th scope="col"><h2>Ankieta klasy {{ class_name }}:</h2></th>
+                <th>
+                    <a href=""><button type="button" class="btn btn-warning" onclick="history.back()">Powrót</button></a>
+                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Modyfikuj</button></a>
+                    <a href="{% url 'teacher:delete_questionnaire' questionnaire_id %}"><button type="button" class="btn btn-warning">Usuń ankietę</button></a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="align-middle">skala ocen:</td>
+                <td class="align-middle">
+                    {{ gradescale }}
+                </td>
+            </tr>
+            <tr>
+                <td class="align-middle">termin na wypełnienie ankiety:</td>
+                <td class="align-middle">
+                    {% if deadline is not None %}
+                        {{ deadline }}
+                    {% else %}
+                        <i>termin końcowy nie został podany</i>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="align-middle">treść wiadomości:</td>
+                <td class="align-middle">
+                    {% if message_to_students is None %}
+                        {% for msg in message_to_students %}
+                            {{ msg }}<br>
+                        {% endfor %}
+                    {% else %}
+                        <i>brak wiadomości do uczniów</i>
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="align-middle">linki do ankiet personalnych:</td>
+                <td class="align-middle">
+
+                    <table>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.name }}</td>
+                            <td></td>
+                            <td style="font-family:monospace;">
+                                <a href="{% url 'teacher:list_classes' %}"
+                                {{ student.personal_questionnaire_link }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+
+
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
     </div>
 {% endblock %}
+

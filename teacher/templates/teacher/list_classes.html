@@ -11,7 +11,7 @@
             <a href="{% url 'teacher:show_class' class.id %}" class="list-group-item list-group-item-action list-group-item-secondary">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>klasa {{ class.class_number }}{{ class.class_letter }}</h4>
+                        <h4>klasa {{ class }}</h4>
                     </div>
                     <div>
 
@@ -19,7 +19,7 @@
                 </div>
             </a>
         {% endfor %}
-        <a href="{% url 'teacher:add_class' %}" class="list-group-item list-group-item-action list-group-item-secondary justify-content-center">
+        <a href="{% url 'teacher:add_class' %}" class="list-group-item list-group-item-action list-group-item-secondary text-center">
             <h5>+ utwórz nową klasę</h5>
         </a>
     </div>

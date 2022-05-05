@@ -11,9 +11,10 @@
                 <th style="width: 10%"></th>
                 <th scope="col"><h2>Szczegóły klasy:</h2></th>
                 <th>
-                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Powrót do listy klas</button></a>
+                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Powrót</button></a>
+                    <a href="{% url 'teacher:add_questionnaire' class_id %}"><button type="button" class="btn btn-info">Ankieta</button></a>
                     <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Modyfikuj</button></a>
-                    <a href="{% url 'teacher:delete_class' class_id %}"><button type="button" class="btn btn-warning">Usuń</button></a>
+                    <a href="{% url 'teacher:delete_class' class_id %}"><button type="button" class="btn btn-warning">Usuń klasę</button></a>
                 </th>
             </tr>
             </thead>
@@ -48,8 +49,6 @@
             </tr>
             </tbody>
         </table>
-        <a href="{% url 'teacher:add_questionnaire' class_id %}">
-            <button type="button" class="btn btn-warning">Utwórz ankietę</button>
-        </a>
+
     </div>
 {% endblock %}
