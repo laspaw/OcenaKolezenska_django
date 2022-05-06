@@ -61,6 +61,8 @@ class Student(models.Model):
     name = models.CharField(max_length=32)
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='student2class')
     personal_questionnaire_link = models.CharField(max_length=128, null=True, unique=True)
+    absolute_questionnaire_url = ''
+    qrcode_path = 'myqr.png'
 
     @staticmethod
     def cleanup_and_convert_review_students_text_to_list(review_students_text: str, mask_last_name: bool):

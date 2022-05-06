@@ -59,7 +59,7 @@
                         <thead>
                         <tr>
                             <th class="align-middle">uczeń</th>
-                            <th class="align-middle">podgląd ankiety</th>
+                            <th class="align-middle">ID ankiety (podgląd)</th>
                             <th class="align-middle">link</th>
                             <th class="align-middle">kod QR</th>
                             <th class="align-middle">% wypełnienia</th>
@@ -69,20 +69,46 @@
                             <tr>
                                 <td class="align-middle">{{ student.name }}</td>
                                 <td class="align-middle" style="font-family:monospace;">
-                                    <a href="{% url 'teacher:personal_questionnaire' student.personal_questionnaire_link %} " target="_blank">
+                                    <a href="{{ student.absolute_questionnaire_url }} " target="_blank">
                                         {{ student.personal_questionnaire_link }}
                                     </a>
                                 </td>
                                 <td>
-                                    <button onclick="copyToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'teacher:personal_questionnaire' student.personal_questionnaire_link %}')"
-                                            type="button" class="btn" data-toggle="tooltip" data-placement="left" title="Kopiuj link do ankiety uczniowskiej do schowka">
-
+                                    <button onclick="copyToClipboard('{{ student.absolute_questionnaire_url }}')"
+                                            type="button" class="btn" title="Kopiuj do schowka link do ankiety uczniowskiej">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
                                             <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
                                             <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
                                         </svg>
                                     </button>
-
+                                </td>
+                                <td>
+                                    <span data-bs-toggle="modal" data-bs-target="#{{ student.personal_questionnaire_link }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
+                                            <path d="M2 2h2v2H2V2Z"/>
+                                            <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/>
+                                            <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/>
+                                            <path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"/>
+                                            <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"/>
+                                        </svg>
+                                    </span>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="{{ student.personal_questionnaire_link }}" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="ModalLabel">{{ student.name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                   {{ student.qrcode_path }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Zamknij</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </td>
                             </tr>
