@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
 
-
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
     return render(request, "teacher/list_classes.html", context)
@@ -119,25 +118,9 @@ def show_questionnaire(request, questionnaire_id):
     return render(request, "teacher/show_questionnaire.html", context)
 
 
-def peronal_questionnaire(request, peronal_questionnaire_id):
-    jeżeli jest ankieta ->
-
-    Student.objects.filter(personal_questionnaire_link=peronal_questionnaire_id)
-
-    my_questionnaire = Questionnaire.objects.get(pk=questionnaire_id)
-    class_name = Class.objects.get(pk=my_questionnaire.classid_id)
-    students = Student.objects.filter(classid=my_questionnaire.classid_id)
-    # - wyśietlanie linków dla uczniów + QRcode
-
+def personal_questionnaire(request, personal_questionnaire_id):
+    link = Student.objects.filter(personal_questionnaire_link=personal_questionnaire_id)
     context = {
-        'class_name': class_name,
-        'questionnaire_id': questionnaire_id,
-        'deadline': None if my_questionnaire.deadline is None else my_questionnaire.deadline.strftime('%Y-%d-%m %H:%M'),
-        'message_to_students': my_questionnaire.message_to_students.split('\n'),
-        'gradescale': my_questionnaire.gradescale.caption,
-        'students': students,
+        'link': link,
     }
-    return render(request, "teacher/show_questionnaire.html", context)
-
-
-
+    return render(request, "teacher/personal_questionnaire.html", context)

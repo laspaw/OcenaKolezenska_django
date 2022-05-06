@@ -1,6 +1,5 @@
 {% extends 'teacher/base.html' %}
 {% load static %}
-
 {% block content %}
     <div class="container">
         <br>
@@ -8,24 +7,30 @@
         <table class="table">
             <thead>
             <tr>
-                <th style="width: 10%"></th>
+                <th style="width: 20%"></th>
                 <th scope="col"><h2>Ankieta klasy {{ class_name }}:</h2></th>
                 <th>
-                    <a href=""><button type="button" class="btn btn-warning" onclick="history.back()">Powrót</button></a>
-                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Modyfikuj</button></a>
-                    <a href="{% url 'teacher:delete_questionnaire' questionnaire_id %}"><button type="button" class="btn btn-warning">Usuń ankietę</button></a>
+                    <a href="">
+                        <button type="button" class="btn btn-warning" onclick="history.back()">Powrót</button>
+                    </a>
+                    <a href="{% url 'teacher:list_classes' %}">
+                        <button type="button" class="btn btn-warning">Modyfikuj</button>
+                    </a>
+                    <a href="{% url 'teacher:delete_questionnaire' questionnaire_id %}">
+                        <button type="button" class="btn btn-warning">Usuń ankietę</button>
+                    </a>
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td class="align-middle">skala ocen:</td>
+                <th class="align-middle">skala ocen:</th>
                 <td class="align-middle">
                     {{ gradescale }}
                 </td>
             </tr>
             <tr>
-                <td class="align-middle">termin na wypełnienie ankiety:</td>
+                <th class="align-middle">termin na wypełnienie ankiety:</th>
                 <td class="align-middle">
                     {% if deadline is not None %}
                         {{ deadline }}
@@ -35,7 +40,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="align-middle">treść wiadomości:</td>
+                <th class="align-middle">treść wiadomości:</th>
                 <td class="align-middle">
                     {% if message_to_students is None %}
                         {% for msg in message_to_students %}
@@ -48,23 +53,42 @@
             </tr>
 
             <tr>
-                <td class="align-middle">linki do ankiet personalnych:</td>
+                <th class="align-middle">ankiety uczniowskie:</th>
                 <td class="align-middle">
-
-                    <table>
-                        {% for student in students %}
+                    <table class="table table-striped">
+                        <thead>
                         <tr>
-                            <td>{{ student.name }}</td>
-                            <td></td>
-                            <td style="font-family:monospace;">
-                                <a href="{% url 'teacher:list_classes' %}"
-                                {{ student.personal_questionnaire_link }}
-                            </td>
-                        </tr>
+                            <th class="align-middle">uczeń</th>
+                            <th class="align-middle">podgląd ankiety</th>
+                            <th class="align-middle">link</th>
+                            <th class="align-middle">kod QR</th>
+                            <th class="align-middle">% wypełnienia</th>
+                        </thead>
+                        <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td class="align-middle">{{ student.name }}</td>
+                                <td class="align-middle" style="font-family:monospace;">
+                                    <a href="{% url 'teacher:personal_questionnaire' student.personal_questionnaire_link %} " target="_blank">
+                                        {{ student.personal_questionnaire_link }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <button onclick="copyToClipboard('{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'teacher:personal_questionnaire' student.personal_questionnaire_link %}')"
+                                            type="button" class="btn" data-toggle="tooltip" data-placement="left" title="Kopiuj link do ankiety uczniowskiej do schowka">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                        </svg>
+                                    </button>
+
+
+                                </td>
+                            </tr>
                         {% endfor %}
+                        </tbody>
                     </table>
-
-
                 </td>
             </tr>
 
