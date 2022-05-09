@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='student',
-            name='personal_questionnaire_link',
+            name='personal_questionnaire_id',
             field=models.CharField(max_length=128, null=True),
         ),
     ]

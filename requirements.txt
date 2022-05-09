@@ -6,3 +6,5 @@ ipython
 pytest
 Faker
 pendulum
+qrcode
+

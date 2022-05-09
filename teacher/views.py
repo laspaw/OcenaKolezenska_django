@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
 from django.urls import resolve, reverse
+import qrcode
+
 
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
@@ -89,7 +91,7 @@ def add_questionnaire(request, class_id):
                 }
                 questionnaire_obj = Questionnaire.objects.create(**data)
                 for student in Student.objects.filter(classid_id=class_id):
-                    student.personal_questionnaire_link = 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+                    student.personal_questionnaire_id = 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20))
                     student.save()
                 return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_obj.id)
             elif 'return' in request.POST:
@@ -107,8 +109,11 @@ def show_questionnaire(request, questionnaire_id):
     class_name = Class.objects.get(pk=my_questionnaire.classid_id)
     students = Student.objects.filter(classid=my_questionnaire.classid_id)
     for student in students:
-        url = request.build_absolute_uri(reverse('teacher:personal_questionnaire', args=(student.personal_questionnaire_link,)))
+        url = request.build_absolute_uri(reverse('teacher:personal_questionnaire', args=(student.personal_questionnaire_id,)))
         student.absolute_questionnaire_url = url
+        student.qrcode_path = f'qrcodes/{student.personal_questionnaire_id}.png'
+        img = qrcode.make(url)
+        img.save('static/' + student.qrcode_path)
 
     context = {
         'class_name': class_name,
@@ -120,10 +125,9 @@ def show_questionnaire(request, questionnaire_id):
     }
     return render(request, "teacher/show_questionnaire.html", context)
 
-#
 
 def personal_questionnaire(request, personal_questionnaire_id):
-    link = Student.objects.filter(personal_questionnaire_link=personal_questionnaire_id)
+    link = Student.objects.filter(personal_questionnaire_id=personal_questionnaire_id)
     context = {
         'link': link,
     }
