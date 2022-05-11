@@ -1,10 +1,10 @@
 import string
 import random
-from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
-from django.urls import resolve, reverse
 import qrcode
+from django.shortcuts import render, redirect
+from django.urls import resolve, reverse
 
 
 def list_classes(request):
@@ -75,7 +75,7 @@ def delete_questionnaire(request, questionnaire_id):
 
 def add_questionnaire(request, class_id):
     questionnaire_id = Questionnaire.objects.filter(classid_id=class_id)
-    if len(questionnaire_id) == 0:
+    if len(questionnaire_id) == 0: # jeżeli jest już ankieta, wyświetl ją, jeżeli nie ma, utwórz ją
         if request.method == "POST":
             if 'save' in request.POST:
                 deadline = request.POST['deadline']
@@ -119,7 +119,7 @@ def show_questionnaire(request, questionnaire_id):
         'class_name': class_name,
         'questionnaire_id': questionnaire_id,
         'deadline': None if my_questionnaire.deadline is None else my_questionnaire.deadline.strftime('%Y-%d-%m %H:%M'),
-        'message_to_students': my_questionnaire.message_to_students.split('\n'),
+        'message_to_students': my_questionnaire.message_to_students.split('\n') if len(my_questionnaire.message_to_students) > 0 else None,
         'gradescale': my_questionnaire.gradescale.caption,
         'students': students,
     }
@@ -127,8 +127,21 @@ def show_questionnaire(request, questionnaire_id):
 
 
 def personal_questionnaire(request, personal_questionnaire_id):
-    link = Student.objects.filter(personal_questionnaire_id=personal_questionnaire_id)
+    if request.method == "POST":
+        grade = request.POST['grade']
+    else:
+        grade = 'unset'
+
+    student_obj = Student.objects.filter(personal_questionnaire_id=personal_questionnaire_id)
+    if not student_obj:
+        return render(request, "teacher/404.html")
+    class_obj = student_obj[0].classid.questionnaire2class.last()
+
+    form = PersonalQuestionnaireForm()
     context = {
-        'link': link,
+        'message_to_students': class_obj.message_to_students.split('\n'),
+        'form': form,
+        'grade': grade,
     }
     return render(request, "teacher/personal_questionnaire.html", context)
+

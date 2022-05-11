@@ -135,6 +135,55 @@ class AddQuestionnaireForm(forms.Form):
                 css_class="d-flex justify-content-left "),
         )
 
+
+class PersonalQuestionnaireForm(forms.Form):
+    CHOICES = [('select1', 'select 1'),
+               ('select2', 'select 2'),
+               ('select3', 'select 5'),
+               ]
+
+    grade = forms.ChoiceField(
+        widget=forms.RadioSelect(),
+        choices=CHOICES,
+        label='wystaw ocenę:',
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            HTML('''
+<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="grade" id="id_grade_0" value="select1">
+    <label class="btn btn-outline-primary" for="id_grade_0">Radio 1</label>
+
+    <input type="radio" class="btn-check" name="grade" id="id_grade_1" value="select2">
+    <label class="btn btn-outline-primary" for="id_grade_1">Radio 2</label>
+
+    <input type="radio" class="btn-check" name="grade" id="id_grade_2" value="select3">
+    <label class="btn btn-outline-primary" for="id_grade_2">Radio 3</label>
+</div>            
+            '''),
+            ButtonHolder(
+                Submit('submit', 'Wyślij', css_class='btn btn-warning'),
+                css_class="d-flex justify-content-left "),
+        )
+
+
+    # <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    #     <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+    #     <label class="btn btn-outline-primary" for="btnradio1">Radio 1</label>
+    #
+    #     <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+    #     <label class="btn btn-outline-waring" for="btnradio2">Radio 2</label>
+    #
+    #     <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+    #     <label class="btn btn-outline-info" for="btnradio3">Radio 3</label>
+    # </div>
+
+
+
 # class AddQuestionnaireForm(forms.ModeldForm):
 #     class Meta:
 #         model = Questionnaire

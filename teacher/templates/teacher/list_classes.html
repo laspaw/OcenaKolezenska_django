@@ -7,6 +7,9 @@
 {% block content %}
     <div class="container">
         <h3>Lista klas:</h3>
+        <a href="{% url 'teacher:add_class' %}" class="list-group-item list-group-item-action list-group-item-secondary text-center">
+            <h5>+ utwórz nową klasę</h5>
+        </a>
         {% for class in classes_list %}
             <a href="{% url 'teacher:show_class' class.id %}" class="list-group-item list-group-item-action list-group-item-secondary">
                 <div class="d-flex justify-content-between">
@@ -19,10 +22,7 @@
                 </div>
             </a>
         {% endfor %}
-        <a href="{% url 'teacher:add_class' %}" class="list-group-item list-group-item-action list-group-item-secondary text-center">
-            <h5>+ utwórz nową klasę</h5>
-        </a>
-    </div>
+
 {% endblock %}
 
 {#  <li class="list-group-item d-flex justify-content-between align-items-center">#}

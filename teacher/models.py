@@ -6,6 +6,9 @@ import pendulum
 class Semester(models.Model):
     name = models.CharField(max_length=16)
 
+    def __str__(self):
+        return str(self.name)
+
     @staticmethod
     def get_semester_caption(date: pendulum.datetime) -> str:
         first_semester_start_month = 9
@@ -46,7 +49,7 @@ class Class(models.Model):
     created_from = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='class2created_from', null=True)
 
     def __str__(self):
-        return str(self.class_number) + self.class_letter + (" (" + self.school + ")" if len(self.school) > 0 else '')
+        return str(self.class_number) + str(self.class_letter) + ' - ' + str(self.semester) + (" - (" + self.school + ")" if len(self.school) > 0 else '')
 
 
 class Questionnaire(models.Model):
@@ -60,9 +63,10 @@ class Questionnaire(models.Model):
 class Student(models.Model):
     name = models.CharField(max_length=32)
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='student2class')
-    personal_questionnaire_link = models.CharField(max_length=128, null=True, unique=True)
+    personal_questionnaire_id = models.CharField(max_length=128, null=True, unique=True)
+    questionnaire_fillin_ratio = models.IntegerField(default=0)
     absolute_questionnaire_url = ''
-    qrcode_path = 'myqr.png'
+    qrcode_path = ''
 
     @staticmethod
     def cleanup_and_convert_review_students_text_to_list(review_students_text: str, mask_last_name: bool):

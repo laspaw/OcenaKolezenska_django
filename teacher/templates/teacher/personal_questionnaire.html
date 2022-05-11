@@ -3,6 +3,16 @@
 {% load crispy_forms_tags %}
 {% block content %}
     <div class="container">
-        {{ link }}
+        {% for msg in message_to_students %}
+            {{ msg }}<br>
+        {% endfor %}
+
+        <br>
+        {% crispy form %}
+        <br>
+        {{ grade }}
+        <br>
+
     </div>
 {% endblock %}
+
