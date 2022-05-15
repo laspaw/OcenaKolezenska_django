@@ -75,7 +75,7 @@ def delete_questionnaire(request, questionnaire_id):
 
 def add_questionnaire(request, class_id):
     questionnaire_id = Questionnaire.objects.filter(classid_id=class_id)
-    if len(questionnaire_id) == 0: # jeżeli jest już ankieta, wyświetl ją, jeżeli nie ma, utwórz ją
+    if len(questionnaire_id) == 0:  # jeżeli jest już ankieta, wyświetl ją, jeżeli nie ma, utwórz ją
         if request.method == "POST":
             if 'save' in request.POST:
                 deadline = request.POST['deadline']
@@ -127,21 +127,49 @@ def show_questionnaire(request, questionnaire_id):
 
 
 def personal_questionnaire(request, personal_questionnaire_id):
-    if request.method == "POST":
-        grade = request.POST['grade']
-    else:
-        grade = 'unset'
-
     student_obj = Student.objects.filter(personal_questionnaire_id=personal_questionnaire_id)
     if not student_obj:
         return render(request, "teacher/404.html")
-    class_obj = student_obj[0].classid.questionnaire2class.last()
+    student_obj = student_obj[0]
+    class_obj = student_obj.classid
+    questionnaire_obj = class_obj.questionnaire2class.last()
+    gradescale_obj = questionnaire_obj.gradescale
+    grades = gradescale_obj.grade2gradescale.all()
 
-    form = PersonalQuestionnaireForm()
+    # clear request.POST to keys related with saved grades
+    GRADES_PREFIX = 'studentid'
+    answers_dict = {}
+    for request_POST_key, request_POST_value in request.POST.items():
+        if request_POST_key.startswith(GRADES_PREFIX):
+            answers_dict[request_POST_key] = request_POST_value
+
+    # save answers to database
+    if request.method == "POST":
+        for answer_key, answer_value in answers_dict.items():
+            studentid = answer_key[len(GRADES_PREFIX):]
+            if answer := Answer.objects.filter(grading_student=student_obj.id, graded_student=studentid):
+                answer.update(
+                    grading_student_id=student_obj.id,
+                    graded_student_id=studentid,
+                    grade_id=int(answer_value),
+                )
+            else:
+                answer = Answer.objects.create(
+                    grading_student_id=student_obj.id,
+                    graded_student_id=studentid,
+                    grade_id=int(answer_value),
+                )
+
+    # load answers from database to be checked in form
+    for answer in Answer.objects.filter(grading_student=student_obj.id):
+        answers_dict[GRADES_PREFIX + str(answer.graded_student.id)] = answer.grade.id
+
+    form = PersonalQuestionnaireForm(answers=answers_dict, grades_prefix=GRADES_PREFIX, class_obj=class_obj, grades=grades)
+
     context = {
-        'message_to_students': class_obj.message_to_students.split('\n'),
+        'student_name': student_obj.name,
+        'message_to_students': questionnaire_obj.message_to_students.split('\n'),
         'form': form,
-        'grade': grade,
+        'answer': answers_dict,
     }
     return render(request, "teacher/personal_questionnaire.html", context)
-

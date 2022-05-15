@@ -137,58 +137,57 @@ class AddQuestionnaireForm(forms.Form):
 
 
 class PersonalQuestionnaireForm(forms.Form):
-    CHOICES = [('select1', 'select 1'),
-               ('select2', 'select 2'),
-               ('select3', 'select 5'),
-               ]
-
-    grade = forms.ChoiceField(
-        widget=forms.RadioSelect(),
-        choices=CHOICES,
-        label='wystaw ocenę:',
-    )
+    styles = None
+    class_obj = None
 
     def __init__(self, *args, **kwargs):
+        self.grades = kwargs.pop('grades', None)
+        self.class_obj = kwargs.pop('class_obj', None)
+        self.answers = kwargs.pop('answers')
+        self.grades_prefix = kwargs.pop('grades_prefix')
+
         super().__init__(*args, **kwargs)
+        self.styles = self.render_styles()
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-            HTML('''
-<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-    <input type="radio" class="btn-check" name="grade" id="id_grade_0" value="select1">
-    <label class="btn btn-outline-primary" for="id_grade_0">Radio 1</label>
-
-    <input type="radio" class="btn-check" name="grade" id="id_grade_1" value="select2">
-    <label class="btn btn-outline-primary" for="id_grade_1">Radio 2</label>
-
-    <input type="radio" class="btn-check" name="grade" id="id_grade_2" value="select3">
-    <label class="btn btn-outline-primary" for="id_grade_2">Radio 3</label>
-</div>            
-            '''),
+            HTML(self.render_button_radio_select()),
+            HTML('<br>'),
             ButtonHolder(
-                Submit('submit', 'Wyślij', css_class='btn btn-warning'),
-                css_class="d-flex justify-content-left "),
+                Submit('submit', 'Zapisz odpowiedzi', css_class='btn btn-warning'),
+                css_class="d-flex justify-content-center "),
         )
 
+    def render_button_radio_select(self):
+        html_code = ''
+        html_code += '<table>'
 
-    # <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-    #     <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-    #     <label class="btn btn-outline-primary" for="btnradio1">Radio 1</label>
-    #
-    #     <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
-    #     <label class="btn btn-outline-waring" for="btnradio2">Radio 2</label>
-    #
-    #     <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-    #     <label class="btn btn-outline-info" for="btnradio3">Radio 3</label>
-    # </div>
+        for student in self.class_obj.student2class.all():
+            html_code += '<tr>'
+            html_code += f'<td style="padding-bottom: 1em;">{student.name}</td>'
+            html_code += f'<td style="padding-bottom: 1em;">'
+            for grade in self.grades:
+                checked = 'checked=""' if self.answers.get(self.grades_prefix + str(student.id)) == grade.id else ''
+                html_code += f'''
+<input type="radio" class="btn-check" name="{self.grades_prefix}{student.id}" id="{student.id}_{grade.id}" value="{grade.id}" {checked}>
+<label class="btn btn-outline-custom{grade.int_value}" for="{student.id}_{grade.id}">{grade.caption}</label>
+                        '''
+            html_code += '</td>'
+            html_code += '</tr>'
 
+        html_code += '</table>'
+        return html_code
 
-
-# class AddQuestionnaireForm(forms.ModeldForm):
-#     class Meta:
-#         model = Questionnaire
-#         fields = ['ext_description', 'deadline', 'is_stats_processed', 'gradescale']
-#         labels = {
-#             "ext_description": "opis",
-#             "deadline": "Data końcowa na uzupełnienie ankiety"
-#         }
+    def render_styles(self):
+        styles = ''
+        for grade in self.grades:
+            bg_color = grade.bg_color
+            styles += f'''
+.btn-outline-custom{grade.int_value}
+    {{color:grey;background-color:{bg_color}20;border-color:{bg_color}}}
+.btn-outline-custom{grade.int_value}:hover,.btn-check:active+.btn-outline-custom{grade.int_value},.btn-check:checked+.btn-outline-custom{grade.int_value},.btn-outline-custom{grade.int_value}.active,.btn-outline-custom{grade.int_value}.dropdown-toggle.show,.btn-outline-custom{grade.int_value}:active
+    {{color:white;background-color:{bg_color};border-color:{bg_color}}}
+.btn-check:active+.btn-outline-custom{grade.int_value}:focus,.btn-check:checked+.btn-outline-custom{grade.int_value}:focus,.btn-outline-custom{grade.int_value}.active:focus,.btn-outline-custom{grade.int_value}.dropdown-toggle.show:focus,.btn-outline-custom{grade.int_value}:active:focus,.btn-check:focus+.btn-outline-custom{grade.int_value},.btn-outline-custom{grade.int_value}:focus
+    {{box-shadow:0 0 0 .25rem rgba(165, 150, 147,.3)}}
+                '''
+        return styles

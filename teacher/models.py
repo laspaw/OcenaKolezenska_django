@@ -84,6 +84,10 @@ class Student(models.Model):
 
 
 class Answer(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['grading_student', 'graded_student'], name='unique grading to graded')
+        ]
     answer_timestamp = models.DateTimeField(auto_now_add=True)
     grading_student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name='answer2grading_student')
     graded_student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name='answer2graded_student')
