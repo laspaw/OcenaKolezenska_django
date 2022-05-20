@@ -9,16 +9,23 @@
 {% endblock %}
 
 {% block content %}
+<script>
+window.onbeforeunload = function(){
+    return "Are you sure you want to navigate away from this page?\nAll unsaved changes will be lost.";
+};
+</script>
+
+
     <div class="container d-flex flex-column justify-content-center">
         <div class="d-flex justify-content-center">
             <table>
                 <tr>
                     <td>
                         <div class="py-3">
-                            <p>
+                            <p><i>
                                 Ta ankieta jest przeznaczona dla ucznia: <b>{{ student_name }}</b><br>
                                 Jeżeli nie jesteś nim, zamknij to okno i zgłoś pomyłkę nauczycielowi.
-                            </p>
+                            </i></p>
                             <p>
                                 {% for msg in message_to_students %}
                                     {{ msg }}<br>

@@ -7,4 +7,5 @@ pytest
 Faker
 pendulum
 qrcode
-
+matplotlib
+numpy

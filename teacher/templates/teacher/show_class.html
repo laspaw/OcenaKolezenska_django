@@ -8,33 +8,43 @@
         <table class="table">
             <thead>
             <tr>
-                <th style="width: 10%"></th>
-                <th scope="col"><h2>Szczegóły klasy:</h2></th>
+                <th style="width: 2%"></th>
                 <th>
-                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Powrót</button></a>
-                    <a href="{% url 'teacher:add_questionnaire' class_id %}"><button type="button" class="btn btn-info">Ankieta</button></a>
-                    <a href="{% url 'teacher:list_classes' %}"><button type="button" class="btn btn-warning">Modyfikuj</button></a>
-                    <a href="{% url 'teacher:delete_class' class_id %}"><button type="button" class="btn btn-warning">Usuń klasę</button></a>
+                    <div class="d-flex flex-row justify-content-between">
+                        <div><h2>Szczegóły klasy:</h2></div>
+                        <div>
+                            <a href="{% url 'teacher:list_classes' %}">
+                                <button type="button" class="btn btn-warning">Powrót</button>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="{% url 'teacher:add_questionnaire' my_class.id %}">
+                                <button type="button" class="btn btn-info">Ankieta</button>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="{% url 'teacher:list_classes' %}">
+                                <button type="button" class="btn btn-warning">Modyfikuj</button>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="{% url 'teacher:delete_class' my_class.id %}">
+                                <button type="button" class="btn btn-warning">Usuń klasę</button>
+                            </a>
+                        </div>
+                    </div>
                 </th>
+            </tr>
+
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>klasa:</td>
-                <td>{{ class_number }}{{ class_letter }} (semestr: {{ semester }})</td>
+                <th>klasa:</th>
+                <td>{{ my_class }})</td>
             </tr>
             <tr>
-                <td>szkoła:</td>
-                <td>
-                    {% if school|length %}
-                        {{ school }}
-                    {% else %}
-                        <i>nazwa szkoły nie została podana</i>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td>lista uczniów:</td>
+                <th>lista&nbspuczniów:</th>
                 <td>
                     {% if students|length > 0 %}
                         <ol>

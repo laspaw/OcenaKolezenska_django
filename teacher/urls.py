@@ -29,4 +29,5 @@ urlpatterns = [
                   path('show_questionnaire/<int:questionnaire_id>', show_questionnaire, name="show_questionnaire"),
                   path('delete_questionnaire/<int:questionnaire_id>', delete_questionnaire, name="delete_questionnaire"),
                   path('questionnaire/<str:personal_questionnaire_id>', personal_questionnaire, name="personal_questionnaire"),
+                  path('statistics/<int:student_id>', Statistics.as_view(), name="statistics"),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

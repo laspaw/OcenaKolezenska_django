@@ -1,13 +1,13 @@
+import pendulum
 from django.db import models
 from colorfield.fields import ColorField
-import pendulum
 
 
 class Semester(models.Model):
     name = models.CharField(max_length=16)
 
     def __str__(self):
-        return str(self.name)
+        return 'semestr ' + str(self.name)
 
     @staticmethod
     def get_semester_caption(date: pendulum.datetime) -> str:
@@ -49,7 +49,7 @@ class Class(models.Model):
     created_from = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='class2created_from', null=True)
 
     def __str__(self):
-        return str(self.class_number) + str(self.class_letter) + ' - ' + str(self.semester) + (" - (" + self.school + ")" if len(self.school) > 0 else '')
+        return str(self.class_number) + str(self.class_letter) + ', ' + str(self.semester) + (" (" + self.school + ")" if len(self.school) > 0 else '')
 
 
 class Questionnaire(models.Model):
@@ -88,18 +88,18 @@ class Answer(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['grading_student', 'graded_student'], name='unique grading to graded')
         ]
+
     answer_timestamp = models.DateTimeField(auto_now_add=True)
     grading_student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name='answer2grading_student')
     graded_student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name='answer2graded_student')
-    grade = models.ForeignKey("Grade", on_delete=models.CASCADE, related_name='grade_id')
+    grade = models.ForeignKey("Grade", on_delete=models.CASCADE, related_name='answer2grade')
 
 
 class Grade(models.Model):
     caption = models.CharField(max_length=32)
     int_value = models.IntegerField()
     image = models.CharField(max_length=128, null=True)
-    txt_color = ColorField(default='#000000', null=True)
-    bg_color = ColorField(default='#FFFFFF', null=True)
+    bg_color = ColorField(default='#888888')
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='grade2gradescale')
 
 

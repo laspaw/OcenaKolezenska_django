@@ -147,7 +147,7 @@ class PersonalQuestionnaireForm(forms.Form):
         self.grades_prefix = kwargs.pop('grades_prefix')
 
         super().__init__(*args, **kwargs)
-        self.styles = self.render_styles()
+        self.styles = self.render_styles(self.grades)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
@@ -178,9 +178,10 @@ class PersonalQuestionnaireForm(forms.Form):
         html_code += '</table>'
         return html_code
 
-    def render_styles(self):
+    @staticmethod
+    def render_styles(grades):
         styles = ''
-        for grade in self.grades:
+        for grade in grades:
             bg_color = grade.bg_color
             styles += f'''
 .btn-outline-custom{grade.int_value}
