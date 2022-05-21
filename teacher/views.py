@@ -174,7 +174,7 @@ def personal_questionnaire(request, personal_questionnaire_id):
                     graded_student_id=studentid,
                     grade_id=int(answer_value),
                 )
-        student_obj.questionnaire_fillin_ratio = int(counter / class_obj.student2class.count() * 100)
+        student_obj.questionnaire_response_rate = int(counter / class_obj.student2class.count() * 100)
         student_obj.save()
 
     # load answers from database to be checked in form
@@ -201,8 +201,8 @@ class Statistics(View):
     def clear_from_none(self, my_list):
         return list(filter(lambda n: n is not None, my_list))
 
-    def get_grades_matrix_except_self_grade(self, answers_obj):
-        return self.clear_from_none([(answer.grade.int_value if answer.graded_student != answer.grading_student else None) for answer in answers_obj])
+    def get_grades_matrix_except_self_grade(self, answers_queryset):
+        return self.clear_from_none([(answer.grade.int_value if answer.graded_student != answer.grading_student else None) for answer in answers_queryset])
 
     def get_all_grades_attr(self, attr_name):
         return [grade.__getattribute__(attr_name) for grade in Grade.objects.filter(gradescale_id=self.gradescale_obj.id)]
@@ -274,11 +274,12 @@ class Statistics(View):
 
         # collect self grade data
         self_grade = Answer.objects.filter(grading_student_id=student_id, graded_student_id=student_id).first()
-        mean_self_grade = np.round(np.mean(self.collect_self_grade_matrix()), 1)
-        median_self_grade = np.round(np.median(self.collect_self_grade_matrix()), 1)
+        self_grade_mean = np.round(np.mean(self.collect_self_grade_matrix()), 1)
+        self_grade_median = np.round(np.median(self.collect_self_grade_matrix()), 1)
 
         # collect collected grades data
-        student_collected_grades_matrix: list = self.get_grades_matrix_except_self_grade(Answer.objects.filter(graded_student_id=self.student_obj.id))
+        student_collected_answers_matrix: list = Answer.objects.filter(graded_student_id=self.student_obj.id)
+        student_collected_grades_matrix: list = self.get_grades_matrix_except_self_grade(student_collected_answers_matrix)
         student_collected_grades_counts_matrix = [student_collected_grades_matrix.count(grade) for grade in self.get_all_grades_attr('int_value')]
         student_collected_grades_plot = self.create_plot(student_collected_grades_counts_matrix, class_mean_grades_matrix)  # plot as image in memory
         student_collected_grades_sum = len(student_collected_grades_matrix)
@@ -286,16 +287,15 @@ class Statistics(View):
         student_mean_collected_grade = np.round(np.mean(student_collected_grades_matrix), 1)
         student_median_collected_grade = np.round(np.median(student_collected_grades_matrix), 1)
 
-        # - liczba otrzymanych/wystawionych ocen
-        # - średnia/przeciętna otrzymanych/wystawionych ocen
+        debug = student_collected_answers_matrix
 
         # collect given grades data
         student_given_grades_matrix: list = self.get_grades_matrix_except_self_grade(Answer.objects.filter(grading_student_id=self.student_obj.id))
         student_given_grades_counts_matrix = [student_given_grades_matrix.count(grade) for grade in self.get_all_grades_attr('int_value')]
-        student_given_grades_plot = self.create_plot(student_given_grades_counts_matrix, class_mean_grades_matrix)
+        student_given_grades_plot = self.create_plot(student_given_grades_counts_matrix, class_mean_grades_matrix)  # plot as image in memory
 
         context = {
-            'debug': 'debug',
+            'debug': debug,
 
             # general data
             'student_obj': self.student_obj,
@@ -306,8 +306,8 @@ class Statistics(View):
             'styles': PersonalQuestionnaireForm.render_styles(grades),
             'grades': grades,
             'self_grade': self_grade,
-            'mean_self_grade': mean_self_grade,
-            'median_self_grade': median_self_grade,
+            'self_grade_mean': self_grade_mean,
+            'self_grade_median': self_grade_median,
 
             # collected grades data
             'student_collected_grades_sum': student_collected_grades_sum,

@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='student',
-            name='questionnaire_fillin_ratio',
+            name='questionnaire_response_rate',
             field=models.IntegerField(default=0),
         ),
     ]

@@ -6,9 +6,6 @@ from colorfield.fields import ColorField
 class Semester(models.Model):
     name = models.CharField(max_length=16)
 
-    def __str__(self):
-        return 'semestr ' + str(self.name)
-
     @staticmethod
     def get_semester_caption(date: pendulum.datetime) -> str:
         first_semester_start_month = 9
@@ -33,11 +30,17 @@ class Semester(models.Model):
             temp_list2.append((semester.id, semester.name))
         return tuple(temp_list1 + temp_list2)
 
+    def __str__(self):
+        return 'semestr ' + str(self.name)
+
 
 class Teacher(models.Model):
     email = models.EmailField(max_length=128, unique=True)
     name = models.CharField(max_length=64)
     phone = models.CharField(max_length=16, null=True, blank=True, unique=True)
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Class(models.Model):
@@ -59,12 +62,15 @@ class Questionnaire(models.Model):
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='questionnaire2gradescale')
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, unique=True, related_name='questionnaire2class')
 
+    def __str__(self):
+        return 'Questionnaire for class_id=' + str(self.classid)
+
 
 class Student(models.Model):
     name = models.CharField(max_length=32)
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, related_name='student2class')
     personal_questionnaire_id = models.CharField(max_length=128, null=True, unique=True)
-    questionnaire_fillin_ratio = models.IntegerField(default=0)
+    questionnaire_response_rate = models.IntegerField(default=0)
     absolute_questionnaire_url = ''
     qrcode_path = ''
 
@@ -72,7 +78,6 @@ class Student(models.Model):
     def cleanup_and_convert_review_students_text_to_list(review_students_text: str, mask_last_name: bool):
         review_students_list = review_students_text.split('\n')
         return_list = []
-        temp = None
         for list_item in review_students_list:
             temp = list_item.strip().split(' ')
             if len(temp) < 2:
@@ -81,6 +86,9 @@ class Student(models.Model):
                 temp[0] = temp[0][:1] + '*' * (len(temp[0]) - 1)
             return_list.append(temp[1] + ' ' + temp[0])
         return return_list
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Answer(models.Model):
@@ -94,6 +102,9 @@ class Answer(models.Model):
     graded_student = models.ForeignKey("Student", on_delete=models.CASCADE, related_name='answer2graded_student')
     grade = models.ForeignKey("Grade", on_delete=models.CASCADE, related_name='answer2grade')
 
+    def __str__(self):
+        return f'grade {self.grade} from {self.grading_student} to {self.graded_student}'
+
 
 class Grade(models.Model):
     caption = models.CharField(max_length=32)
@@ -102,6 +113,9 @@ class Grade(models.Model):
     bg_color = ColorField(default='#888888')
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='grade2gradescale')
 
+    def __str__(self):
+        return str(self.caption)
+
 
 class Gradescale(models.Model):
     @staticmethod
@@ -109,6 +123,9 @@ class Gradescale(models.Model):
         return ((gradescale.id, gradescale.caption,) for gradescale in Gradescale.objects.all())
 
     caption = models.CharField(max_length=64)
+
+    def __str__(self):
+        return str(self.caption)
 
 # abstract class timestaped:
 #     created_at = models.DateTimeField(auto_now_add=True)
