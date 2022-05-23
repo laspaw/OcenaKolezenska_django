@@ -109,7 +109,7 @@ class Answer(models.Model):
 class Grade(models.Model):
     caption = models.CharField(max_length=32)
     int_value = models.IntegerField()
-    image = models.CharField(max_length=128, null=True)
+    svg_icon = models.TextField(null=True)
     bg_color = ColorField(default='#888888')
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='grade2gradescale')
 

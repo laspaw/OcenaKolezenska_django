@@ -57,7 +57,7 @@ ROOT_URLCONF = 'OcenaKolezenska.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['teacher/templates/teacher/DjangoTemplates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,6 +68,13 @@ TEMPLATES = [
             ],
         },
     },
+    {
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': ['teacher/templates/teacher'],
+        'APP_DIRS': False,
+
+    },
+
 ]
 
 WSGI_APPLICATION = 'OcenaKolezenska.wsgi.application'

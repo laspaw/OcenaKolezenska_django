@@ -26,7 +26,7 @@ for dir_to_create in DIRS_TO_CREATE:
 
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
-    return render(request, "teacher/list_classes.html", context)
+    return render(request, "teacher/jinja2/list_classes.html", context)
 
 
 def delete_class(request, class_id):
@@ -46,7 +46,7 @@ def add_class(request):
         class_obj = Class.objects.create(**data)
         return redirect('teacher:add_students', class_id=class_obj.id)
     form = AddClassForm()
-    return render(request, "teacher/add_class.html", {"form": form})
+    return render(request, "teacher/jinja2/add_class.html", {"form": form})
 
 
 def show_class(request, class_id):
@@ -57,7 +57,7 @@ def show_class(request, class_id):
         'my_class': my_class,
         'students': students,
     }
-    return render(request, "teacher/show_class.html", context)
+    return render(request, "teacher/jinja2/show_class.html", context)
 
 
 def add_students(request, class_id):
@@ -76,7 +76,7 @@ def add_students(request, class_id):
             return redirect('teacher:show_class', class_id=class_id)
     else:
         form = AddStudentsForm()
-    return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list})
+    return render(request, "teacher/jinja2/add_students.html", {'form': form, 'review_students_list': review_students_list})
 
 
 def delete_questionnaire(request, questionnaire_id):
@@ -111,7 +111,7 @@ def add_questionnaire(request, class_id):
                 return redirect('teacher:show_class', class_id=class_id)
         elif request.method == "GET":
             form = AddQuestionnaireForm()
-            return render(request, "teacher/add_questionnaire.html",
+            return render(request, "teacher/jinja2/add_questionnaire.html",
                           {'form': form, 'class_name': Class.objects.get(pk=class_id)})
     if len(questionnaire_id) == 1:
         return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id[0].id)
@@ -136,13 +136,13 @@ def show_questionnaire(request, questionnaire_id):
         'gradescale': my_questionnaire.gradescale.caption,
         'students': students,
     }
-    return render(request, "teacher/show_questionnaire.html", context)
+    return render(request, "teacher/jinja2/show_questionnaire.html", context)
 
 
 def personal_questionnaire(request, personal_questionnaire_id):
     student_obj = Student.objects.filter(personal_questionnaire_id=personal_questionnaire_id)
     if not student_obj:
-        return render(request, "teacher/404.html")
+        return render(request, "teacher/jinja2/404.html")
     student_obj = student_obj[0]
     class_obj = student_obj.classid
     questionnaire_obj = class_obj.questionnaire2class.last()
@@ -187,9 +187,8 @@ def personal_questionnaire(request, personal_questionnaire_id):
         'student_name': student_obj.name,
         'message_to_students': questionnaire_obj.message_to_students.split('\n'),
         'form': form,
-        'answer': student_obj,
     }
-    return render(request, "teacher/personal_questionnaire.html", context)
+    return render(request, "teacher/jinja2/personal_questionnaire.html", context)
 
 
 class Statistics(View):
@@ -197,12 +196,6 @@ class Statistics(View):
     my_class_obj = None
     questionnaire_obj = None
     gradescale_obj = None
-
-    def clear_from_none(self, my_list):
-        return list(filter(lambda n: n is not None, my_list))
-
-    def get_grades_matrix_except_self_grade(self, answers_queryset):
-        return self.clear_from_none([(answer.grade.int_value if answer.graded_student != answer.grading_student else None) for answer in answers_queryset])
 
     def get_all_grades_attr(self, attr_name):
         return [grade.__getattribute__(attr_name) for grade in Grade.objects.filter(gradescale_id=self.gradescale_obj.id)]
@@ -270,7 +263,7 @@ class Statistics(View):
 
         # collect general data
         class_mean_grades_matrix = [np.mean(answers_sum) for answers_sum in self.collect_grade_sum_matrix()]
-        students_in_class = Student.objects.filter(classid_id=self.my_class_obj.id).count()
+        students_in_class = Student.objects.filter(classid_id=self.my_class_obj.id).count() - 1
 
         # collect self grade data
         self_grade = Answer.objects.filter(grading_student_id=student_id, graded_student_id=student_id).first()
@@ -278,24 +271,35 @@ class Statistics(View):
         self_grade_median = np.round(np.median(self.collect_self_grade_matrix()), 1)
 
         # collect collected grades data
-        student_collected_answers_matrix: list = Answer.objects.filter(graded_student_id=self.student_obj.id)
-        student_collected_grades_matrix: list = self.get_grades_matrix_except_self_grade(student_collected_answers_matrix)
-        student_collected_grades_counts_matrix = [student_collected_grades_matrix.count(grade) for grade in self.get_all_grades_attr('int_value')]
-        student_collected_grades_plot = self.create_plot(student_collected_grades_counts_matrix, class_mean_grades_matrix)  # plot as image in memory
-        student_collected_grades_sum = len(student_collected_grades_matrix)
-        student_collected_grades_percent = np.round(student_collected_grades_sum / students_in_class * 100, 1)
-        student_mean_collected_grade = np.round(np.mean(student_collected_grades_matrix), 1)
-        student_median_collected_grade = np.round(np.median(student_collected_grades_matrix), 1)
+        student_collected_answers = Answer.objects.filter(graded_student_id=self.student_obj.id).exclude(grading_student_id=self.student_obj.id)
+        student_collected_grades_list = [answer.grade.int_value for answer in student_collected_answers]
+        student_collected_grades_counts_matrix = [student_collected_grades_list.count(grade) for grade in self.get_all_grades_attr('int_value')]
+        student_collected_grades_plot = self.create_plot(student_collected_grades_counts_matrix, class_mean_grades_matrix)  # plot as svg_icon in memory
 
-        debug = student_collected_answers_matrix
+        student_collected_grades_sum = len(student_collected_grades_list)
+        student_collected_grades_percent = np.round(student_collected_grades_sum / students_in_class * 100, 1)
+        student_mean_collected_grade = 0 if np.isnan(ret := np.round(np.mean(student_collected_grades_list), 1)) else ret
+        student_median_collected_grade = 0 if np.isnan(ret := np.round(np.median(student_collected_grades_list), 1)) else ret
+        grading_students_names = {}
+        for grade in Grade.objects.filter(gradescale_id=self.gradescale_obj.id):
+            grading_students_names[grade] = [answer.grading_student.name for answer in student_collected_answers.filter(grade_id=grade.id)]
 
         # collect given grades data
-        student_given_grades_matrix: list = self.get_grades_matrix_except_self_grade(Answer.objects.filter(grading_student_id=self.student_obj.id))
-        student_given_grades_counts_matrix = [student_given_grades_matrix.count(grade) for grade in self.get_all_grades_attr('int_value')]
-        student_given_grades_plot = self.create_plot(student_given_grades_counts_matrix, class_mean_grades_matrix)  # plot as image in memory
+        student_given_answers = Answer.objects.filter(grading_student_id=self.student_obj.id).exclude(graded_student_id=self.student_obj.id)
+        student_given_grades_list = [answer.grade.int_value for answer in student_given_answers]
+        student_given_grades_counts_matrix = [student_given_grades_list.count(grade) for grade in self.get_all_grades_attr('int_value')]
+        student_given_grades_plot = self.create_plot(student_given_grades_counts_matrix, class_mean_grades_matrix)  # plot as svg_icon in memory
+
+        student_given_grades_sum = len(student_given_grades_list)
+        student_given_grades_percent = np.round(student_given_grades_sum / students_in_class * 100, 1)
+        student_mean_given_grade = 0 if np.isnan(ret := np.round(np.mean(student_given_grades_list), 1)) else ret
+        student_median_given_grade = 0 if np.isnan(ret := np.round(np.median(student_given_grades_list), 1)) else ret
+        graded_students_names = {}
+        for grade in Grade.objects.filter(gradescale_id=self.gradescale_obj.id):
+            graded_students_names[grade] = [answer.graded_student.name for answer in student_given_answers.filter(grade_id=grade.id)]
 
         context = {
-            'debug': debug,
+            'debug': 'grading_students_names',
 
             # general data
             'student_obj': self.student_obj,
@@ -312,12 +316,18 @@ class Statistics(View):
             # collected grades data
             'student_collected_grades_sum': student_collected_grades_sum,
             'student_collected_grades_percent': student_collected_grades_percent,
-            'student_collected_grades_plot': student_collected_grades_plot,
             'student_mean_collected_grade': student_mean_collected_grade,
             'student_median_collected_grade': student_median_collected_grade,
+            'student_collected_grades_plot': student_collected_grades_plot,
+            'grading_students_names': grading_students_names,
 
             # given grades data
+            'student_given_grades_sum': student_given_grades_sum,
+            'student_given_grades_percent': student_given_grades_percent,
+            'student_mean_given_grade': student_mean_given_grade,
+            'student_median_given_grade': student_median_given_grade,
             'student_given_grades_plot': student_given_grades_plot,
+            'graded_students_names': graded_students_names,
 
         }
-        return render(request, "teacher/statistics.html", context)
+        return render(request, "teacher/jinja2/statistics.html", context)

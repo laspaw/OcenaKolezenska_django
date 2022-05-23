@@ -1,6 +1,8 @@
-{% extends 'teacher/base.html' %}
+{% extends 'teacher/jinja2/base.html' %}
 {% load static %}
+
 {% block content %}
+
 
     <div class="container">
         <br>
@@ -82,29 +84,18 @@
                         {% for student in students %}
                             <tr>
                                 <td class="align-middle">{{ student.name }}</td>
-                                <td class="align-middle" style="font-family:monospace;">
+                                <td class="align-middle monospace-font">
                                     <a href="{{ student.absolute_questionnaire_url }} " target="_blank">
                                         {{ student.personal_questionnaire_id }}
                                     </a>
                                 </td>
                                 <td class="td-center">
-                                    <script>
-                                        function copyToClipboard{{ student.id }}(element) {
-                                            navigator.clipboard.writeText(arguments[0]);
-                                            var tooltip = document.getElementById("{{ student.id }}");
-                                            tooltip.innerHTML = "Link skopiowany";
-                                        }
-
-                                        function outFunc{{ student.id }}() {
-                                            var tooltip = document.getElementById("{{ student.id }}");
-                                            tooltip.innerHTML = "Skopiuj link do schowka";
-                                        }
-                                    </script>
                                     <div class="mytooltip">
-                                        <button onclick="copyToClipboard{{ student.id }}('{{ student.absolute_questionnaire_url }}')" onmouseout="outFunc{{ student.id }}()"
+                                        <button onclick="copyToClipboard('{{ student.absolute_questionnaire_url }}', 'tooltip_{{ student.id }}', 'svg_{{ student.id }}')"
+                                                onmouseout="outFunc('tooltip_{{ student.id }}')"
                                                 type="button" class="btn">
-                                            <span class="mytooltiptext" id="{{ student.id }}">Skopiuj link do schowka</span>
-                                            <svg width="24" height="24" fill="currentColor" class="bi bi-clipboard-plus" viewBox="0 0 16 16">
+                                            <span class="mytooltiptext" id="tooltip_{{ student.id }}">Skopiuj link do schowka</span>
+                                            <svg id="svg_{{ student.id }}" width="24" height="24" fill="currentColor" class="bi bi-clipboard-plus" viewBox="0 0 16 16">
                                                 <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z"/>
                                             </svg>
                                         </button>
@@ -138,6 +129,9 @@
                                         </div>
                                     </div>
                                     <!-- End of Modal -->
+
+
+
                                 </td>
                                 <td class="td-center">
                                     {{ student.questionnaire_response_rate }}%
@@ -145,8 +139,7 @@
                                 <td class="td-center">
                                     <a href="{% url 'teacher:statistics' student.id %}" class="btn">
                                         <svg width="24" height="24" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd"
-                                                  d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+                                            <path d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
                                         </svg>
                                     </a>
                                 </td>
@@ -160,21 +153,12 @@
             </tbody>
         </table>
     </div>
+
+
 {% endblock %}
 
-{#unhappy:#}
-{#<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-frown" viewBox="0 0 16 16">#}
-{#   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>#}
-{#</svg>#}
-{##}
-{#neutral:#}
-{#<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-neutral" viewBox="0 0 16 16">#}
-{#  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>#}
-{#  <path d="M4 10.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5zm3-4C7 5.672 6.552 5 6 5s-1 .672-1 1.5S5.448 8 6 8s1-.672 1-1.5zm4 0c0-.828-.448-1.5-1-1.5s-1 .672-1 1.5S9.448 8 10 8s1-.672 1-1.5z"/>#}
-{#</svg>#}
-{##}
-{#happy:#}
-{#<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-emoji-smile" viewBox="0 0 16 16">#}
-{#  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>#}
-{#  <path d="M4.285 9.567a.5.5 0 0 1 .683.183A3.498 3.498 0 0 0 8 11.5a3.498 3.498 0 0 0 3.032-1.75.5.5 0 1 1 .866.5A4.498 4.498 0 0 1 8 12.5a4.498 4.498 0 0 1-3.898-2.25.5.5 0 0 1 .183-.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>#}
-{#</svg>#}
+{#{% macro svg(svg_code, width='24' height='24') - %}#}
+{#    <svg width="{{ width }}" height="{{ height }}" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">#}
+{#        {{ svg_code }}#}
+{#    </svg>#}
+{#{% - endmacro %}#}

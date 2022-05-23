@@ -1,4 +1,4 @@
-{% extends 'teacher/base_wo_header.html' %}
+{% extends 'teacher/jinja2/base_wo_header.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 
@@ -9,13 +9,6 @@
 {% endblock %}
 
 {% block content %}
-<script>
-window.onbeforeunload = function(){
-    return "Are you sure you want to navigate away from this page?\nAll unsaved changes will be lost.";
-};
-</script>
-
-
     <div class="container d-flex flex-column justify-content-center">
         <div class="d-flex justify-content-center">
             <table>
@@ -24,7 +17,8 @@ window.onbeforeunload = function(){
                         <div class="py-3">
                             <p><i>
                                 Ta ankieta jest przeznaczona dla ucznia: <b>{{ student_name }}</b><br>
-                                Jeżeli nie jesteś nim, zamknij to okno i zgłoś pomyłkę nauczycielowi.
+                                Jeżeli nie jesteś tym uczniem, zamknij ankietę i zgłoś pomyłkę nauczycielowi.<br>
+                                <u>Gdy skończysz, nie zapomnij kliknąć w przycisk "Zapisz odpowiedzi"</u>
                             </i></p>
                             <p>
                                 {% for msg in message_to_students %}
@@ -41,11 +35,6 @@ window.onbeforeunload = function(){
                         </div>
                     </td>
                 </tr>
-                <td>
-                    <div>
-                        {{ answer }}
-                    </div>
-                </td>
                 </tr>
             </table>
         </div>

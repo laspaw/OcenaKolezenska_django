@@ -1,7 +1,8 @@
 /*general section*/
 body {background-color: #e5e1e0;}
 .td-center {text-align: center;}
-
+.plot-fit {width:90%; object-fit: scale-down;}
+.monospace-font {font-family:monospace;}
 
 /*tooltip section*/
 .mytooltip {

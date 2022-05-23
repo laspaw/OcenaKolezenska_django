@@ -168,9 +168,14 @@ class PersonalQuestionnaireForm(forms.Form):
             html_code += f'<td style="padding-bottom: 1em;">'
             for grade in self.grades:
                 checked = 'checked=""' if self.answers.get(self.grades_prefix + str(student.id)) == grade.id else ''
+                caption_or_svg_image = grade.caption if not grade.svg_icon else f'''
+<svg width="48" height="48" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
+<path d="{ grade.svg_icon }"/>
+</svg>                
+                '''
                 html_code += f'''
 <input type="radio" class="btn-check" name="{self.grades_prefix}{student.id}" id="{student.id}_{grade.id}" value="{grade.id}" {checked}>
-<label class="btn btn-outline-custom{grade.int_value}" for="{student.id}_{grade.id}">{grade.caption}</label>
+<label class="btn btn-outline-custom{grade.int_value}" for="{student.id}_{grade.id}">{caption_or_svg_image}</label>
                         '''
             html_code += '</td>'
             html_code += '</tr>'

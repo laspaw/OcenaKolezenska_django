@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('caption', models.CharField(max_length=32)),
-                ('image', models.CharField(max_length=128, null=True)),
+                ('svg_icon', models.CharField(max_length=128, null=True)),
                 ('txt_color', colorfield.fields.ColorField(default='#000000', image_field=None, max_length=18, samples=None)),
                 ('bg_color', colorfield.fields.ColorField(default='#FFFFFF', image_field=None, max_length=18, samples=None)),
                 ('gradescale', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='grade2gradescale', to='teacher.gradescale')),

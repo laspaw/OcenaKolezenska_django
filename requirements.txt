@@ -9,3 +9,5 @@ pendulum
 qrcode
 matplotlib
 numpy
+
+jinja2
