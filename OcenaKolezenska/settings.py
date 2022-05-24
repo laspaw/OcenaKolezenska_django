@@ -68,13 +68,6 @@ TEMPLATES = [
             ],
         },
     },
-    {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': ['teacher/templates/teacher'],
-        'APP_DIRS': False,
-
-    },
-
 ]
 
 WSGI_APPLICATION = 'OcenaKolezenska.wsgi.application'

@@ -26,7 +26,7 @@ for dir_to_create in DIRS_TO_CREATE:
 
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
-    return render(request, "teacher/jinja2/list_classes.html", context)
+    return render(request, "teacher/list_classes.html", context)
 
 
 def delete_class(request, class_id):
@@ -46,7 +46,7 @@ def add_class(request):
         class_obj = Class.objects.create(**data)
         return redirect('teacher:add_students', class_id=class_obj.id)
     form = AddClassForm()
-    return render(request, "teacher/jinja2/add_class.html", {"form": form})
+    return render(request, "teacher/add_class.html", {"form": form})
 
 
 def show_class(request, class_id):
@@ -57,7 +57,7 @@ def show_class(request, class_id):
         'my_class': my_class,
         'students': students,
     }
-    return render(request, "teacher/jinja2/show_class.html", context)
+    return render(request, "teacher/show_class.html", context)
 
 
 def add_students(request, class_id):
@@ -76,7 +76,7 @@ def add_students(request, class_id):
             return redirect('teacher:show_class', class_id=class_id)
     else:
         form = AddStudentsForm()
-    return render(request, "teacher/jinja2/add_students.html", {'form': form, 'review_students_list': review_students_list})
+    return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list})
 
 
 def delete_questionnaire(request, questionnaire_id):
@@ -111,7 +111,7 @@ def add_questionnaire(request, class_id):
                 return redirect('teacher:show_class', class_id=class_id)
         elif request.method == "GET":
             form = AddQuestionnaireForm()
-            return render(request, "teacher/jinja2/add_questionnaire.html",
+            return render(request, "teacher/add_questionnaire.html",
                           {'form': form, 'class_name': Class.objects.get(pk=class_id)})
     if len(questionnaire_id) == 1:
         return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id[0].id)
@@ -136,13 +136,13 @@ def show_questionnaire(request, questionnaire_id):
         'gradescale': my_questionnaire.gradescale.caption,
         'students': students,
     }
-    return render(request, "teacher/jinja2/show_questionnaire.html", context)
+    return render(request, "teacher/show_questionnaire.html", context)
 
 
 def personal_questionnaire(request, personal_questionnaire_id):
     student_obj = Student.objects.filter(personal_questionnaire_id=personal_questionnaire_id)
     if not student_obj:
-        return render(request, "teacher/jinja2/404.html")
+        return render(request, "teacher/404.html")
     student_obj = student_obj[0]
     class_obj = student_obj.classid
     questionnaire_obj = class_obj.questionnaire2class.last()
@@ -188,7 +188,7 @@ def personal_questionnaire(request, personal_questionnaire_id):
         'message_to_students': questionnaire_obj.message_to_students.split('\n'),
         'form': form,
     }
-    return render(request, "teacher/jinja2/personal_questionnaire.html", context)
+    return render(request, "teacher/personal_questionnaire.html", context)
 
 
 class Statistics(View):
@@ -330,4 +330,4 @@ class Statistics(View):
             'graded_students_names': graded_students_names,
 
         }
-        return render(request, "teacher/jinja2/statistics.html", context)
+        return render(request, "teacher/statistics.html", context)
