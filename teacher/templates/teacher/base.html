@@ -6,10 +6,10 @@
     {% include 'teacher/base_head.html' %}
     {% block style %}{% endblock %}
 </head>
-<body>
-    {% include 'teacher/header.html' %}
-    {% block content %}{% endblock %}
-    {% include 'teacher/footer.html' %}
+<body style="background-image: url({% static 'teacher/img/bg.png' %})">
+{% include 'teacher/header.html' %}
+{% block content %}{% endblock %}
+{% include 'teacher/footer.html' %}
 </body>
 </html>
 

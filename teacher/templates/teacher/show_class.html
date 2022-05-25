@@ -2,59 +2,95 @@
 {% load static %}
 
 {% block content %}
-    <div class="container">
-        <br>
-
+    <div class="container my-5 ">
         <table class="table">
             <thead>
             <tr>
-                <th style="width: 2%"></th>
-                <th>
+                <th colspan="2">
                     <div class="d-flex flex-row justify-content-between">
                         <div><h2>Szczegóły klasy:</h2></div>
                         <div>
-                            <a href="{% url 'teacher:list_classes' %}">
-                                <button type="button" class="btn btn-warning">Powrót</button>
-                            </a>
-                        </div>
-                        <div>
                             <a href="{% url 'teacher:add_questionnaire' my_class.id %}">
-                                <button type="button" class="btn btn-info">Ankieta</button>
+                                <button type="button" class="btn btn-success">
+                                    {{ icon_checks_grid|safe }} Ankieta
+                                </button>
                             </a>
                         </div>
                         <div>
                             <a href="{% url 'teacher:list_classes' %}">
-                                <button type="button" class="btn btn-warning">Modyfikuj</button>
+                                <button type="button" class="btn btn-warning">
+                                    {{ icon_modify|safe }} Modyfikuj
+                                </button>
                             </a>
                         </div>
                         <div>
-                            <a href="{% url 'teacher:delete_class' my_class.id %}">
-                                <button type="button" class="btn btn-warning">Usuń klasę</button>
+                            <button data-bs-toggle="modal" data-bs-target="#class_delete"
+                                    type="button" class="btn btn-warning" title="usuń klasę">
+                                {{ icon_trash|safe }} Usuń klasę
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="class_delete" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body flex-column">
+                                            <h2>Czy na pewno chcesz skasować klasę {{ my_class }}?</h2>
+                                            <img src="{% static 'teacher/img/trash500.png' %}" class="center-img" style="max-height: 300px; max-width: 300px">
+                                        </div>
+                                        <div class="modal-footer justify-content-around">
+                                            <a href="{% url 'teacher:delete_class' my_class.id %}">
+                                                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">TAK</button>
+                                            </a>
+                                            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">NIE</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End of Modal -->
+                        </div>
+                        <div>
+                            <a href="{% url 'teacher:list_classes' %}">
+                                <button type="button" class="btn btn-warning">
+                                    {{ icon_return|safe }} Powrót
+                                </button>
                             </a>
                         </div>
+
                     </div>
                 </th>
             </tr>
-
-            </tr>
             </thead>
+
             <tbody>
             <tr>
                 <th>klasa:</th>
-                <td>{{ my_class }})</td>
+                <td>{{ my_class }}</td>
+            </tr>
+            <tr>
+                <th>semestr:</th>
+                <td>{{ my_class.semester.caption }}</td>
             </tr>
             <tr>
                 <th>lista&nbspuczniów:</th>
                 <td>
-                    {% if students|length > 0 %}
-                        <ol>
-                            {% for student in students %}
-                                <li>{{ student }}</li>
-                            {% endfor %}
-                        </ol>
-                    {% else %}
-                        <i>do tej klasy nie dodano żadnego ucznia</i>
-                    {% endif %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            {% if students|length > 0 %}
+                                <ol>
+                                    {% for student in students %}
+                                        <li>{{ student }}</li>
+                                    {% endfor %}
+                                </ol>
+                            {% else %}
+                                <i>do tej klasy nie dodano żadnego ucznia</i>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <img src="{% static 'teacher/img/questionnaire1000.png' %}" class="plot-fit" style="max-height: 500px">
+                        </div>
+                    </div>
                 </td>
             </tr>
             </tbody>

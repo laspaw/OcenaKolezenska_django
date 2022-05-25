@@ -4,7 +4,7 @@ from colorfield.fields import ColorField
 
 
 class Semester(models.Model):
-    name = models.CharField(max_length=16)
+    caption = models.CharField(max_length=16)
 
     @staticmethod
     def get_semester_caption(date: pendulum.datetime) -> str:
@@ -20,18 +20,14 @@ class Semester(models.Model):
         return school_year + " " + school_semester
 
     @staticmethod
-    def get_semester_choices():
-        temp_list1 = []
-        temp_list2 = []
-        semesters = Semester.objects.all()[:20]
-        for semester in semesters:
-            if semester.name == Semester.get_semester_caption(pendulum.now()):
-                temp_list1 = [(semester.id, 'bieżący ' + semester.name)]
-            temp_list2.append((semester.id, semester.name))
-        return tuple(temp_list1 + temp_list2)
+    def get_current_semester():
+        current_semester_caption = Semester.get_semester_caption(pendulum.now())
+        if current_semester := Semester.objects.filter(caption=current_semester_caption).first():
+            return current_semester
+        return Semester.objects.create(caption=current_semester_caption)
 
     def __str__(self):
-        return 'semestr ' + str(self.name)
+        return str(self.caption)
 
 
 class Teacher(models.Model):
@@ -52,7 +48,7 @@ class Class(models.Model):
     created_from = models.ForeignKey('Class', on_delete=models.CASCADE, related_name='class2created_from', null=True)
 
     def __str__(self):
-        return str(self.class_number) + str(self.class_letter) + ', ' + str(self.semester) + (" (" + self.school + ")" if len(self.school) > 0 else '')
+        return str(self.class_number) + str(self.class_letter) + (" (" + self.school + ")" if len(self.school) > 0 else '')
 
 
 class Questionnaire(models.Model):

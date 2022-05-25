@@ -3,7 +3,7 @@
   "model": "teacher.teacher",
   "pk": 1,
   "fields": {
-    "email": "default.teacher@gmail.com",
+    "email": "default.teacher@default.com",
     "name": "Default Teacher",
     "phone": "+48 123 456 789"
   }

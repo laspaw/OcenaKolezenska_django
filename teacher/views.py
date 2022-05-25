@@ -1,3 +1,7 @@
+from .models import *
+from .forms import *
+from .icons import icons
+
 import qrcode
 import matplotlib.pyplot as plt
 import matplotlib
@@ -14,11 +18,8 @@ from django.shortcuts import render, redirect
 from django.urls import resolve, reverse
 from django.views import View
 
-from .models import *
-from .forms import *
-
 matplotlib.use('Agg')  # puts tkinter used by matplotlib in web server mode
-DIRS_TO_CREATE = ['static/qrcodes/', 'static/plots/']
+DIRS_TO_CREATE = ['static/qrcodes/']
 for dir_to_create in DIRS_TO_CREATE:
     if not os.path.exists(dir_to_create):
         os.makedirs(dir_to_create)
@@ -26,7 +27,7 @@ for dir_to_create in DIRS_TO_CREATE:
 
 def list_classes(request):
     context = {'classes_list': Class.objects.all()}
-    return render(request, "teacher/list_classes.html", context)
+    return render(request, "teacher/list_classes.html", context | icons)
 
 
 def delete_class(request, class_id):
@@ -36,16 +37,19 @@ def delete_class(request, class_id):
 
 def add_class(request):
     if request.method == "POST":
+        form = AddClassForm(data=request.POST)
         data = {
             "class_number": request.POST['class_number'],
-            "class_letter": request.POST['class_letter'],
+            "class_letter": request.POST['class_letter'].capitalize(),
             "school": request.POST['school'],
-            "semester_id": request.POST['semester'],
+            "semester_id": Semester.get_current_semester().id,
             "teacher_id": 1,
         }
-        class_obj = Class.objects.create(**data)
-        return redirect('teacher:add_students', class_id=class_obj.id)
-    form = AddClassForm()
+        if form.is_valid():
+            class_obj = Class.objects.create(**data)
+            return redirect('teacher:add_students', class_id=class_obj.id)
+    else:
+        form = AddClassForm()
     return render(request, "teacher/add_class.html", {"form": form})
 
 
@@ -57,13 +61,13 @@ def show_class(request, class_id):
         'my_class': my_class,
         'students': students,
     }
-    return render(request, "teacher/show_class.html", context)
+    return render(request, "teacher/show_class.html", context | icons)
 
 
 def add_students(request, class_id):
     review_students_list = ['po wprowadzeniu listy uczniów kliknij w <Sprawdź>',
                             'w tym oknie pojawi się lista uczniów',
-                            'kiedy ta lista będzie poprawna, kliknij w<Zapisz>',
+                            'gdy lista będzie poprawna, kliknij <Zapisz>',
                             ]
     if request.method == "POST":
         form = AddStudentsForm(data=request.POST)
@@ -136,7 +140,7 @@ def show_questionnaire(request, questionnaire_id):
         'gradescale': my_questionnaire.gradescale.caption,
         'students': students,
     }
-    return render(request, "teacher/show_questionnaire.html", context)
+    return render(request, "teacher/show_questionnaire.html", context | icons)
 
 
 def personal_questionnaire(request, personal_questionnaire_id):
@@ -149,7 +153,7 @@ def personal_questionnaire(request, personal_questionnaire_id):
     gradescale_obj = questionnaire_obj.gradescale
     grades = gradescale_obj.grade2gradescale.all()
 
-    # clear request.POST to keys related with saved grades
+    # clear request.POST from keys related with saved grades
     GRADES_PREFIX = 'studentid'
     answers_dict = {}
     for request_POST_key, request_POST_value in request.POST.items():
@@ -188,7 +192,7 @@ def personal_questionnaire(request, personal_questionnaire_id):
         'message_to_students': questionnaire_obj.message_to_students.split('\n'),
         'form': form,
     }
-    return render(request, "teacher/personal_questionnaire.html", context)
+    return render(request, "teacher/personal_questionnaire.html", context | icons)
 
 
 class Statistics(View):
@@ -277,7 +281,10 @@ class Statistics(View):
         student_collected_grades_plot = self.create_plot(student_collected_grades_counts_matrix, class_mean_grades_matrix)  # plot as svg_icon in memory
 
         student_collected_grades_sum = len(student_collected_grades_list)
-        student_collected_grades_percent = np.round(student_collected_grades_sum / students_in_class * 100, 1)
+        if students_in_class > 0:
+            student_collected_grades_percent = np.round(student_collected_grades_sum / students_in_class * 100, 1)
+        else:
+            student_collected_grades_percent = -1
         student_mean_collected_grade = 0 if np.isnan(ret := np.round(np.mean(student_collected_grades_list), 1)) else ret
         student_median_collected_grade = 0 if np.isnan(ret := np.round(np.median(student_collected_grades_list), 1)) else ret
         grading_students_names = {}
@@ -291,7 +298,10 @@ class Statistics(View):
         student_given_grades_plot = self.create_plot(student_given_grades_counts_matrix, class_mean_grades_matrix)  # plot as svg_icon in memory
 
         student_given_grades_sum = len(student_given_grades_list)
-        student_given_grades_percent = np.round(student_given_grades_sum / students_in_class * 100, 1)
+        if students_in_class > 0:
+            student_given_grades_percent = np.round(student_given_grades_sum / students_in_class * 100, 1)
+        else:
+            student_given_grades_percent = -1
         student_mean_given_grade = 0 if np.isnan(ret := np.round(np.mean(student_given_grades_list), 1)) else ret
         student_median_given_grade = 0 if np.isnan(ret := np.round(np.median(student_given_grades_list), 1)) else ret
         graded_students_names = {}
@@ -330,4 +340,4 @@ class Statistics(View):
             'graded_students_names': graded_students_names,
 
         }
-        return render(request, "teacher/statistics.html", context)
+        return render(request, "teacher/statistics.html", context | icons)

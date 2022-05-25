@@ -1,46 +1,67 @@
 /*general section*/
-body {background-color: #e5e1e0;}
-.td-center {text-align: center;}
-.plot-fit {width:90%; object-fit: scale-down;}
-.monospace-font {font-family:monospace;}
+body {
+    background-color: #f0eae4;
+}
+
+/*kolor maziajów tła: f3f0ea*/
+
+.center {
+    text-align: center;
+}
+
+.center-img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.plot-fit {
+    width: 90%;
+    object-fit: scale-down;
+}
+
+.monospace-font {
+    font-family: monospace;
+}
+
 
 /*tooltip section*/
 .mytooltip {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .mytooltip .mytooltiptext {
-  visibility: hidden;
-  width: 140px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 150%;
-  left: 50%;
-  margin-left: -75px;
-  opacity: 0;
-  transition: opacity 0.3s;
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 .mytooltip .mytooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
 }
 
 .mytooltip:hover .mytooltiptext {
-  visibility: visible;
-  opacity: 1;
+    visibility: visible;
+    opacity: 1;
 }
 
 

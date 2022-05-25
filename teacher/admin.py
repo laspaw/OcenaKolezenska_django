@@ -3,7 +3,7 @@ from .models import Class
 
 # @admin.register(Class)
 # class ClassAdmin(admin.ModelAdmin):
-#     list_display = ["id", "name", "description", "is_active", "created_at", "modified_at"]
-#     search_fields = ["name", "description"]
+#     list_display = ["id", "caption", "description", "is_active", "created_at", "modified_at"]
+#     search_fields = ["caption", "description"]
 #     list_filter = ["is_active"]
 
