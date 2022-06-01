@@ -1,5 +1,6 @@
 {% extends 'teacher/base.html' %}
 {% load static %}
+{% load tags %}
 {% block content %}
     <div class="container">
         <br>
@@ -11,7 +12,7 @@
                     <div class="d-flex flex-row justify-content-between">
                         <div><h2>Ankieta:</h2></div>
                         <div>
-                            <a href="{% url 'teacher:list_classes' %}">
+                            <a href="{% url 'teacher:add_questionnaire' my_class.id 'modify' %}">
                                 <button type="button" class="btn btn-warning">
                                     {{ icon_modify|safe }} Modyfikuj
                                 </button>
@@ -72,8 +73,31 @@
                     {% if deadline is not None %}
                         {{ deadline }}
                     {% else %}
-                        <i>termin końcowy nie został wskazany (ankieta będzie aktywna do czasu jej zamknięcia przez nauczyciela)</i>
+                        <i>termin końcowy nie został wskazany (ankieta będzie aktywna aż do jej zamknięcia)</i>
                     {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th class="align-middle">status ankiety:</th>
+                <td class="align-middle">
+                    {% if is_closed %}
+                        zamknięta
+                        {% set "aktywuj" as action_description %}
+                    {% else %}
+                        {% set "zamknij" as action_description %}
+                        {% if is_overdue %}
+                            zakończona (aby wydłużyć czas na wypełnienie ankiety, kliknij &ltModyfikuj&gt)
+                        {% else %}
+                            otwarta
+                        {% endif %}
+                    {% endif %}
+                    <a href="{% url 'teacher:open_close_questionnaire' questionnaire_id %}">
+                        <button type="button" class="btn btn-warning">
+                            {{ action_description }}
+                        </button>
+                    </a>
+
+                    {{ state }}
                 </td>
             </tr>
             <tr>

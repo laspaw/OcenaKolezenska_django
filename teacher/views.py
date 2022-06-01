@@ -6,6 +6,7 @@ import qrcode
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
+import pendulum
 
 import string
 import random
@@ -17,12 +18,39 @@ import math
 from django.shortcuts import render, redirect
 from django.urls import resolve, reverse
 from django.views import View
+from django.core.exceptions import ObjectDoesNotExist
 
 matplotlib.use('Agg')  # puts tkinter used by matplotlib in web server mode
 DIRS_TO_CREATE = ['static/qrcodes/']
 for dir_to_create in DIRS_TO_CREATE:
     if not os.path.exists(dir_to_create):
         os.makedirs(dir_to_create)
+
+
+def login(request):
+    if request.method == "POST":
+        form = AddClassForm(data=request.POST)
+        data = {
+
+        }
+        if form.is_valid():
+            pass
+    else:
+        form = AddClassForm()
+    return render(request, "teacher/login.html", {"form": form} | icons)
+
+
+def register(request):
+    if request.method == "POST":
+        form = AddClassForm(data=request.POST)
+        data = {
+
+        }
+        if form.is_valid():
+            pass
+    else:
+        form = AddClassForm()
+    return render(request, "teacher/register.html", {"form": form} | icons)
 
 
 def list_classes(request):
@@ -38,30 +66,42 @@ def delete_class(request, class_id):
 def add_class(request):
     if request.method == "POST":
         form = AddClassForm(data=request.POST)
-        data = {
-            "class_number": request.POST['class_number'],
-            "class_letter": request.POST['class_letter'].capitalize(),
-            "school": request.POST['school'],
-            "semester_id": Semester.get_current_semester().id,
-            "teacher_id": 1,
-        }
         if form.is_valid():
+            data = {
+                "class_number": request.POST['class_number'],
+                "class_letter": request.POST['class_letter'].capitalize(),
+                "school": request.POST['school'],
+                "semester_id": Semester.get_current_semester().id,
+                "teacher_id": 1,
+            }
             class_obj = Class.objects.create(**data)
             return redirect('teacher:add_students', class_id=class_obj.id)
     else:
         form = AddClassForm()
-    return render(request, "teacher/add_class.html", {"form": form})
+    return render(request, "teacher/add_class.html", {"form": form} | icons)
 
 
-def show_class(request, class_id):
-    my_class = Class.objects.get(pk=class_id)
-    students = Student.objects.filter(classid_id=class_id)
-    students = [student.name for student in students]
-    context = {
-        'my_class': my_class,
-        'students': students,
-    }
-    return render(request, "teacher/show_class.html", context | icons)
+def modify_class(request, class_id):
+    try:
+        class_obj = Class.objects.get(pk=class_id)
+    except ObjectDoesNotExist:
+        return render(request, "teacher/404.html")
+
+    if request.method == "POST":
+        form = AddClassForm(data=request.POST)
+        if form.is_valid():
+            class_obj.class_number = request.POST['class_number']
+            class_obj.class_letter = request.POST['class_letter'].capitalize()
+            class_obj.school = request.POST['school']
+            class_obj.save()
+            return redirect('teacher:modify_students', class_id=class_obj.id)
+    elif request.method == "GET":
+        form = AddClassForm(action='modify', initial={
+            'class_number': class_obj.class_number,
+            'class_letter': class_obj.class_letter,
+            'school': class_obj.school,
+        })
+    return render(request, "teacher/add_class.html", {"form": form} | icons)
 
 
 def add_students(request, class_id):
@@ -76,11 +116,37 @@ def add_students(request, class_id):
             review_students_text, request.POST.get('mask_lastnames', False))
         if 'save' in request.POST:
             for student in review_students_list:
-                Student.objects.create(name=student, classid_id=class_id)
+                data = {
+                    'name': student,
+                    'personal_questionnaire_id': 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20)),
+                    'classid_id': class_id,
+                }
+                Student.objects.create(**data)
             return redirect('teacher:show_class', class_id=class_id)
-    else:
+    elif request.method == "GET":
         form = AddStudentsForm()
-    return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list})
+    return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list} | icons)
+
+
+def modify_students(request, class_id):
+    review_students_list = []
+    if request.method == "POST":
+        form = AddStudentsForm(data=request.POST)
+        review_students_text = request.POST['students']
+        review_students_list = Student.cleanup_and_convert_review_students_text_to_list(
+            review_students_text, request.POST.get('mask_lastnames', False))
+        if 'save' in request.POST:
+            # for student in review_students_list:
+                # data = {
+                #     'name': student,
+                #     'personal_questionnaire_id': 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20)),
+                #     'classid_id': class_id,
+                # }
+                # Student.objects.create(**data)
+            return redirect('teacher:show_class', class_id=class_id)
+    if request.method == "GET":
+        form = AddStudentsForm(initial={'students': '\n'.join([student.name for student in Student.objects.filter(classid_id=class_id)])})
+    return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list} | icons)
 
 
 def delete_questionnaire(request, questionnaire_id):
@@ -90,41 +156,73 @@ def delete_questionnaire(request, questionnaire_id):
     return redirect('teacher:show_class', class_id=class_id)
 
 
-def add_questionnaire(request, class_id):
-    questionnaire_id = Questionnaire.objects.filter(classid_id=class_id)
-    if len(questionnaire_id) == 0:  # jeżeli jest już ankieta, wyświetl ją, jeżeli nie ma, utwórz ją
+def show_class(request, class_id):
+    my_class = Class.objects.get(pk=class_id)
+    students = Student.objects.filter(classid_id=class_id)
+    students = [student.name for student in students]
+    context = {
+        'my_class': my_class,
+        'students': students,
+    }
+    return render(request, "teacher/show_class.html", context | icons)
+
+
+def open_close_questionnaire(request, questionnaire_id):
+    my_questionnaire = Questionnaire.objects.get(pk=questionnaire_id)
+    if my_questionnaire.is_closed:
+        my_questionnaire.is_closed = False
+    else:
+        my_questionnaire.is_closed = True
+    my_questionnaire.save()
+    return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id)
+
+
+def add_questionnaire(request, class_id, action):
+    if action not in ['add', 'modify', ]:
+        return render(request, "teacher/409_bad_action.html", {'action': action} | icons)
+    questionnaire_qs = Questionnaire.objects.filter(classid_id=class_id)
+
+    if len(questionnaire_qs) == 0:  # nie ma ankiety -> utwórz ją
         if request.method == "POST":
             if 'save' in request.POST:
-                deadline = request.POST['deadline']
-                if deadline == '':
-                    deadline = None
-                print(deadline)
-                print(type(deadline))
                 data = {
-                    'deadline': deadline,
+                    'deadline': Questionnaire.clear_deadline(request.POST['deadline']),
                     'message_to_students': request.POST['message_to_students'],
                     'gradescale_id': request.POST['gradescale'],
                     'classid_id': class_id
                 }
                 questionnaire_obj = Questionnaire.objects.create(**data)
-                for student in Student.objects.filter(classid_id=class_id):
-                    student.personal_questionnaire_id = 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20))
-                    student.save()
                 return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_obj.id)
             elif 'return' in request.POST:
                 return redirect('teacher:show_class', class_id=class_id)
         elif request.method == "GET":
-            form = AddQuestionnaireForm()
-            return render(request, "teacher/add_questionnaire.html",
-                          {'form': form, 'class_name': Class.objects.get(pk=class_id)})
-    if len(questionnaire_id) == 1:
-        return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_id[0].id)
+            form = AddQuestionnaireForm(action=action)
+            return render(request, "teacher/add_questionnaire.html", {'form': form} | icons)
+
+    if len(questionnaire_qs) == 1:  # ankieta istnieje -> wyświetl lub modyfikuj
+        questionnaire_obj = questionnaire_qs[0]
+        if request.method == "POST":
+            questionnaire_obj.deadline = Questionnaire.clear_deadline(request.POST['deadline'])
+            questionnaire_obj.message_to_students = request.POST['message_to_students']
+            questionnaire_obj.gradescale_id = request.POST['gradescale']
+            questionnaire_obj.save()
+            return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_obj.id)
+        elif request.method == "GET":
+            if action == 'add':
+                return redirect('teacher:show_questionnaire', questionnaire_id=questionnaire_obj.id)
+            elif action == 'modify':
+                form = AddQuestionnaireForm(action=action, initial={
+                    'deadline': questionnaire_obj.deadline,
+                    'message_to_students': questionnaire_obj.message_to_students,
+                    'gradescale_id': questionnaire_obj.gradescale_id,
+                })
+                return render(request, "teacher/add_questionnaire.html", {'form': form} | icons)
 
 
 def show_questionnaire(request, questionnaire_id):
-    my_questionnaire = Questionnaire.objects.get(pk=questionnaire_id)
-    my_class = Class.objects.get(pk=my_questionnaire.classid_id)
-    students = Student.objects.filter(classid=my_questionnaire.classid_id)
+    questionnaire_obj = Questionnaire.objects.get(pk=questionnaire_id)
+    my_class = Class.objects.get(pk=questionnaire_obj.classid_id)
+    students = Student.objects.filter(classid=questionnaire_obj.classid_id)
     for student in students:
         url = request.build_absolute_uri(reverse('teacher:personal_questionnaire', args=(student.personal_questionnaire_id,)))
         student.absolute_questionnaire_url = url
@@ -135,9 +233,11 @@ def show_questionnaire(request, questionnaire_id):
     context = {
         'my_class': my_class,
         'questionnaire_id': questionnaire_id,
-        'deadline': None if my_questionnaire.deadline is None else my_questionnaire.deadline.strftime('%Y-%d-%m %H:%M'),
-        'message_to_students': my_questionnaire.message_to_students.split('\n') if len(my_questionnaire.message_to_students) > 0 else None,
-        'gradescale': my_questionnaire.gradescale.caption,
+        'deadline': Questionnaire.get_deadline_caption(questionnaire_obj.deadline),
+        'is_closed': questionnaire_obj.is_closed,
+        'is_overdue': Questionnaire.check_overdue(questionnaire_obj.deadline),
+        'message_to_students': questionnaire_obj.message_to_students.split('\n') if len(questionnaire_obj.message_to_students) > 0 else None,
+        'gradescale': questionnaire_obj.gradescale.caption,
         'students': students,
     }
     return render(request, "teacher/show_questionnaire.html", context | icons)
@@ -185,10 +285,19 @@ def personal_questionnaire(request, personal_questionnaire_id):
     for answer in Answer.objects.filter(grading_student=student_obj.id):
         answers_dict[GRADES_PREFIX + str(answer.graded_student.id)] = answer.grade.id
 
-    form = PersonalQuestionnaireForm(answers=answers_dict, grades_prefix=GRADES_PREFIX, class_obj=class_obj, grades=grades)
+    form = PersonalQuestionnaireForm(
+        answers=answers_dict,
+        grades_prefix=GRADES_PREFIX,
+        class_obj=class_obj,
+        grades=grades,
+        is_overdue=Questionnaire.check_overdue(questionnaire_obj.deadline),
+    )
 
     context = {
         'student_name': student_obj.name,
+        'deadline': Questionnaire.get_deadline_caption(questionnaire_obj.deadline),
+        'is_overdue': Questionnaire.check_overdue(questionnaire_obj.deadline),
+        'is_closed': questionnaire_obj.is_closed,
         'message_to_students': questionnaire_obj.message_to_students.split('\n'),
         'form': form,
     }

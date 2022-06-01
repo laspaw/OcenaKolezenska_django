@@ -10,14 +10,14 @@
                     <div class="d-flex flex-row justify-content-between">
                         <div><h2>Szczegóły klasy:</h2></div>
                         <div>
-                            <a href="{% url 'teacher:add_questionnaire' my_class.id %}">
+                            <a href="{% url 'teacher:add_questionnaire' my_class.id 'add' %}">
                                 <button type="button" class="btn btn-success">
                                     {{ icon_checks_grid|safe }} Ankieta
                                 </button>
                             </a>
                         </div>
                         <div>
-                            <a href="{% url 'teacher:list_classes' %}">
+                            <a href="{% url 'teacher:modify_class' my_class.id %}">
                                 <button type="button" class="btn btn-warning">
                                     {{ icon_modify|safe }} Modyfikuj
                                 </button>

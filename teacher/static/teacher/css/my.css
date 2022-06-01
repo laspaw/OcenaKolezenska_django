@@ -3,8 +3,6 @@ body {
     background-color: #f0eae4;
 }
 
-/*kolor maziajów tła: f3f0ea*/
-
 .center {
     text-align: center;
 }
@@ -24,6 +22,36 @@ body {
     font-family: monospace;
 }
 
+.header-link {
+    color: #1a1e21;
+}
+
+.header-link:hover {
+    color: #ffca2c;
+}
+
+input:checked + label.strikethrough {
+    text-decoration: line-through;
+    background-color: #dd888844
+}
+
+.warning {
+    color: darkred;
+}
+
+.transparent {
+    background-color: #ffffff00
+}
+
+.transparent:hover {
+    background-color: #ffffff88
+}
+
+.btn-primary{
+}
+
+.btn-warning{
+}
 
 /*tooltip section*/
 .mytooltip {

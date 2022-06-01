@@ -55,12 +55,33 @@ class Questionnaire(models.Model):
     deadline = models.DateTimeField(null=True)
     message_to_students = models.TextField(null=True)
     is_stats_processed = models.BooleanField(default=False)
+    is_closed = models.BooleanField(default=False)
     gradescale = models.ForeignKey("Gradescale", on_delete=models.CASCADE, related_name='questionnaire2gradescale')
     classid = models.ForeignKey("Class", on_delete=models.CASCADE, unique=True, related_name='questionnaire2class')
 
     def __str__(self):
         return 'Questionnaire for class_id=' + str(self.classid)
 
+    @staticmethod
+    def get_deadline_caption(deadline):
+        if deadline is None:
+            return None
+        now = pendulum.now()
+        deadline = pendulum.instance(deadline)
+        return f"{deadline.in_timezone(now.timezone).strftime('%Y-%m-%d %H:%M')} {now.tzname()} {now.timezone_name}"
+
+    @staticmethod
+    def check_overdue(deadline):
+        if deadline is None:
+            return False
+        return pendulum.now() > deadline
+
+    @staticmethod
+    def clear_deadline(deadline):
+        if deadline == '' or pendulum.now() > pendulum.instance(pendulum.parse(deadline)):
+            return None
+        else:
+            return deadline
 
 class Student(models.Model):
     name = models.CharField(max_length=32)
@@ -114,10 +135,6 @@ class Grade(models.Model):
 
 
 class Gradescale(models.Model):
-    @staticmethod
-    def get_gradescale_choices():
-        return ((gradescale.id, gradescale.caption,) for gradescale in Gradescale.objects.all())
-
     caption = models.CharField(max_length=64)
 
     def __str__(self):

@@ -11,16 +11,14 @@ class AddClassForm(forms.Form):
     class_number = forms.IntegerField(
         widget=forms.TextInput(attrs={'type': 'number', 'class': 'form-control', 'placeholder': 'np: 1'}),
         label='cyfra klasy:',
-        validators=[MinValueValidator(0, message='Podaj liczbę większą od 0'),
+        validators=[MinValueValidator(0, message='Podaj liczbę nie mniejszą niż 0'),
                     MaxValueValidator(8, message='Podaj liczbę nie większą niż 8')],
     )
     class_letter = forms.CharField(
         max_length=1,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'np: A'}),
         label='litera klasy:',
-        validators=[RegexValidator(regex='^[a-zA-Z]*$', message='Podaj literę'),
-                    ]
-
+        validators=[RegexValidator(regex='^[a-zA-Z]*$', message='Podaj literę'), ]
     )
     school = forms.CharField(
         max_length=80,
@@ -29,12 +27,15 @@ class AddClassForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        self.action = kwargs.pop('action', None)
+        form_header = Fieldset('Tworzenie klasy:') if not self.action else Fieldset('Edycja klasy:')
+
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Div(
-                Fieldset('Wprowadź dane dla tworzonej klasy:'),
+                form_header,
                 Div(
                     Column('class_number', css_class='form-group col-md-5'),
                     HTML('&nbsp'),
@@ -42,9 +43,8 @@ class AddClassForm(forms.Form):
                     css_class="d-flex flex-wrap justify-content-between py-3"),
                 Row('school', css_class='form-group col-md-12'),
                 ButtonHolder(
-                    Submit('submit', 'Utwórz klasę', css_class='btn btn-warning'),
-                    HTML('&nbsp'),
-                    Submit('return', 'Powrót', css_class='btn btn-warning', onclick='history.back()'),
+                    Submit('submit', 'Zapisz', css_class='btn btn-warning mx-2'),
+                    Submit('return', 'Odrzuć', css_class='btn btn-warning mx-2', onclick='history.back()'),
                     css_class="d-flex justify-content-around py-4"),
                 css_class="form-check-inline"),
         )
@@ -54,7 +54,10 @@ class AddStudentsForm(forms.Form):
     students = forms.CharField(
         widget=forms.Textarea(attrs={
             'class': 'form-control',
-            'placeholder': 'Nazwisko Imię\nnp: \nNiezgódka Adaś\nBrzęczyszczykiewicz Grzegorz\nBartolini Bartłomiej\n...',
+            'placeholder': 'NAJPIERW Nazwisko a potem Imię\n'
+                           'jeżeli jakieś nazwisko zawiera spacje, wtedy zamień spacje na myślniki\n'
+                           'np: \nNiezgódka Adaś\nBrzęczyszczykiewicz Grzegorz\n'
+                           'Bartolini Bartłomiej\n...',
         }),
         label='uczniowie:',
         max_length=2048,
@@ -66,6 +69,8 @@ class AddStudentsForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        self.action = kwargs.pop('action', None)
+
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
@@ -79,26 +84,81 @@ Można też przekopiować listę z Librusa:<br>
 (numery w dzienniku zostaną usunięte automatycznie)<br>
 <br>
     '''),
-
             Row('students', css_class='form-group col-md-11 mb-0'),
             Row('mask_lastnames'),
-            HTML('<br>'),
             ButtonHolder(
-                Submit('check', 'Sprawdź', css_class='btn btn-warning'),
-                Submit('save', 'Zapisz', css_class='btn btn-warning'),
-                css_class="d-flex justify-content-around"),
+                Submit('check', 'Sprawdź', css_class='btn btn-warning mx-2'),
+                Submit('save', 'Zapisz', css_class='btn btn-warning mx-2'),
+                css_class="d-flex justify-content-around my-3"),
         )
 
 
-class AddQuestionnaireForm(forms.Form):
-    class Meta:
-        model = Questionnaire
-        fields = ['deadline', 'message_to_students', 'gradescale']
+class ModifyStudentsForm(forms.Form):
+    students_formset = forms.CharField(
+            max_length=80,
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=False,
+            label='student1',
+            initial='student1',
+        )
 
+
+    def __init__(self, *args, **kwargs):
+        self.class_id = kwargs.pop('class_id', None)
+        self.action = kwargs.pop('action', None)
+        self.students_formset = forms.CharField(
+            max_length=80,
+            widget=forms.TextInput(attrs={'class': 'form-control'}),
+            required=False,
+            label='student2',
+            initial='student2',
+        )
+
+        # students_formset = []
+        # for student in Student.objects.filter(classid_id=self.class_id):
+        #     self.students_formset.append(
+        #         forms.CharField(
+        #             max_length=80,
+        #             widget=forms.TextInput(attrs={'class': 'form-control'}),
+        #             required=False,
+        #             label='',
+        #             initial=student.name,
+        #         )
+        #     )
+
+        # html_code = ''
+        # html_code += '<div class="mx-5" style="display: inline">'
+        # <input type="checkbox" id="{student.id}" value="" style="display: none">
+        # <label for="{student.id}" class="strikethrough list-group-item transparent">{student.name}</label>
+        #     html_code += ''
+        # html_code += '</div>'
+        # formset
+
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            'students_formset',
+            Row('students', css_class='form-group col-md-11 mb-0'),
+            ButtonHolder(
+                Submit('check', 'Sprawdź', css_class='btn btn-warning mx-2'),
+                Submit('save', 'Zapisz', css_class='btn btn-warning mx-2'),
+                css_class="d-flex justify-content-around my-3"),
+        )
+
+    def get_class_props(self, cls):
+        acc = ''
+        for p in dir(cls):
+            if not p.startswith('__'):
+                attr_value = getattr(cls, p)
+                acc += f'- {p}: {attr_value} {type(attr_value)}<br>\n'
+        return acc
+
+
+class AddQuestionnaireForm(forms.Form):
     gradescale = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-select'}),
-        choices=Gradescale.get_gradescale_choices(),
-        # authors=forms.ModelMultipleChoiceField(queryset=Author.objects.all())
+        choices=((gradescale.id, gradescale.caption,) for gradescale in Gradescale.objects.all()),
         label='wybierz skalę ocen:',
     )
     deadline = forms.DateTimeField(
@@ -110,7 +170,7 @@ class AddQuestionnaireForm(forms.Form):
         widget=forms.Textarea(attrs={
             'class': 'form-control',
         }),
-        label='wiadomość dla uczniów: (poniżej przykładowa wiadomość do ew. modyfikacji)',
+        label='wiadomość dla uczniów: (poniżej przykładowa wiadomość do modyfikacji)',
         initial=''
                 'Oceń zachowanie swoich koleżanek i kolegów.\n'
                 'Będzie to dla mnie ważna wskazówka przy wystawianiu ocen z zachowania.\n'
@@ -120,15 +180,20 @@ class AddQuestionnaireForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        self.action = kwargs.pop('action', None)
+        self.debug = kwargs.pop('debug', None)
+        self.initial_data = kwargs.pop('initial_data', None)
+        form_header = Fieldset('Tworzenie ankiety:') if self.action == 'add' else Fieldset('Edycja ankiety:')
+
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Div(
-                Fieldset('Tworzenie ankiety:'),
+                HTML(self.debug),
+                form_header,
                 Div(
                     Row('gradescale', css_class='form-group col-md-12 mb-0'),
-                    HTML('(nie będzie możliwości, aby zmienić skalę ocen po utworzeniu ankiety)<br>'),
                     css_class="my-4",
                 ),
                 Div(
@@ -143,9 +208,8 @@ class AddQuestionnaireForm(forms.Form):
                     css_class="my-4",
                 ),
                 ButtonHolder(
-                    Submit('save', 'Zapisz', css_class='btn btn-warning'),
-                    HTML('&nbsp'),
-                    Submit('return', 'Odrzuć', css_class='btn btn-warning'),
+                    Submit('save', 'Zapisz', css_class='btn btn-warning mx-2'),
+                    Submit('return', 'Odrzuć', css_class='btn btn-warning mx-2'),
                     css_class="d-flex justify-content-around my-4"),
                 css_class="form-check-inline text-start"),
         )
@@ -160,6 +224,8 @@ class PersonalQuestionnaireForm(forms.Form):
         self.class_obj = kwargs.pop('class_obj', None)
         self.answers = kwargs.pop('answers')
         self.grades_prefix = kwargs.pop('grades_prefix')
+        self.is_overdue = kwargs.pop('is_overdue', False)
+        self.disabled = ' disabled' if self.is_overdue else ''
 
         super().__init__(*args, **kwargs)
         self.styles = self.render_styles(self.grades)
@@ -169,7 +235,7 @@ class PersonalQuestionnaireForm(forms.Form):
             HTML(self.render_button_radio_select()),
             HTML('<br>'),
             ButtonHolder(
-                Submit('submit', 'Zapisz odpowiedzi', css_class='btn btn-warning'),
+                Submit('submit', 'Zapisz odpowiedzi', css_class='btn btn-warning' + self.disabled),
                 css_class="d-flex justify-content-center "),
         )
 
@@ -183,6 +249,7 @@ class PersonalQuestionnaireForm(forms.Form):
             html_code += f'<td style="padding-bottom: 1em;">'
             for grade in self.grades:
                 checked = 'checked=""' if self.answers.get(self.grades_prefix + str(student.id)) == grade.id else ''
+
                 caption_or_svg_image = grade.caption if not grade.svg_icon else f'''
 <svg width="48" height="48" fill="currentColor" class="bi bi-qr-code" viewBox="0 0 16 16">
 <path d="{grade.svg_icon}"/>
@@ -190,7 +257,7 @@ class PersonalQuestionnaireForm(forms.Form):
             '''
                 html_code += f'''
 <input type="radio" class="btn-check" name="{self.grades_prefix}{student.id}" id="{student.id}_{grade.id}" value="{grade.id}" {checked}>
-<label class="btn btn-outline-custom{grade.int_value}" for="{student.id}_{grade.id}">{caption_or_svg_image}</label>
+<label class="btn btn-outline-custom{grade.int_value} {self.disabled}" for="{student.id}_{grade.id}">{caption_or_svg_image}</label>
                     '''
             html_code += '</td>'
             html_code += '</tr>'
