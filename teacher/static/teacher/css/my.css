@@ -1,3 +1,25 @@
+/*variables*/
+
+:root {
+  --header-base-hue: 50;
+  --header-base-saturation: 100%;
+  --header-base-lightness: 50%;
+  --header-text-color: hsl(calc(var(--header-base-hue) + 180), var(--header-base-saturation), calc(var(--header-base-lightness) - 10%));
+  --header-border-color: hsl(calc(var(--header-base-hue) + 0), var(--header-base-saturation), calc(var(--header-base-lightness) - 0%));
+  --header-leading-color: hsl(var(--header-base-hue), var(--header-base-saturation), var(--header-base-lightness));
+  --header-hover-color: hsl(var(--header-base-hue), var(--header-base-saturation), calc(var(--header-base-lightness) + 20%));
+  --header-box-shadow-color: hsla(var(--header-base-hue), var(--header-base-saturation), var(--header-base-lightness), 50%);
+    
+  --body-base-hue: 33;
+  --body-base-saturation: 77%;
+  --body-base-lightness: 58%;
+  --body-text-color: hsl(calc(var(--body-base-hue) + 180), var(--body-base-saturation), calc(var(--body-base-lightness) - 40%));
+  --body-border-color: hsl(calc(var(--body-base-hue) + 0), var(--body-base-saturation), calc(var(--body-base-lightness) - 0%));
+  --body-leading-color: hsl(var(--body-base-hue), var(--body-base-saturation), var(--body-base-lightness));
+  --body-hover-color: hsl(var(--body-base-hue), var(--body-base-saturation), calc(var(--body-base-lightness) + 10%));
+  --body-box-shadow-color: hsla(var(--body-base-hue), var(--body-base-saturation), var(--body-base-lightness), 50%);
+}
+
 /*general section*/
 body {
     background-color: #f0eae4;
@@ -22,14 +44,6 @@ body {
     font-family: monospace;
 }
 
-.header-link {
-    color: #1a1e21;
-}
-
-.header-link:hover {
-    color: #ffca2c;
-}
-
 input:checked + label.strikethrough {
     text-decoration: line-through;
     background-color: #dd888844
@@ -47,11 +61,76 @@ input:checked + label.strikethrough {
     background-color: #ffffff88
 }
 
-.btn-primary{
+.header-link {
+    color: var(--header-text-color);
 }
 
-.btn-warning{
+.header-link:hover {
+    color: var(--header-leading-color);
 }
+
+/*bootstrap override*/
+
+.btn-primary {
+  color: var(--header-text-color);
+  background-color: var(--header-leading-color);
+  border-color: var(--header-border-color);
+}
+.btn-primary:hover {
+  color: var(--header-text-color);
+  background-color: var(--header-hover-color);
+  border-color: var(--header-border-color);
+}
+.btn-check:focus + .btn-primary, .btn-primary:focus {
+  color: var(--header-text-color);
+  background-color: var(--header-hover-color);
+  border-color: var(--header-border-color);
+  box-shadow: 0 0 0 0.25rem var(--header-box-shadow-color);
+}
+.btn-check:checked + .btn-primary, .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle {
+  color: var(--header-text-color);
+  background-color: var(--header-text-color);
+  border-color: var(--header-border-color);
+}
+.btn-check:checked + .btn-primary:focus, .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.25rem var(--header-box-shadow-color);
+}
+.btn-primary:disabled, .btn-primary.disabled {
+  color: var(--header-text-color);
+  background-color: var(--header-leading-color);
+  border-color: var(--header-border-color);
+}
+
+.btn-warning {
+  color: var(--body-text-color);
+  background-color: var(--body-leading-color);
+  border-color: var(--body-border-color);
+}
+.btn-warning:hover {
+  color: var(--body-text-color);
+  background-color: var(--body-hover-color);
+  border-color: var(--body-border-color);
+}
+.btn-check:focus + .btn-warning, .btn-warning:focus {
+  color: var(--body-text-color);
+  background-color: var(--body-hover-color);
+  border-color: var(--body-border-color);
+  box-shadow: 0 0 0 0.25rem var(--body-box-shadow-color);
+}
+.btn-check:checked + .btn-warning, .btn-check:active + .btn-warning, .btn-warning:active, .btn-warning.active, .show > .btn-warning.dropdown-toggle {
+  color: var(--body-text-color);
+  background-color: var(--body-hover-color);
+  border-color: var(--body-border-color);
+}
+.btn-check:checked + .btn-warning:focus, .btn-check:active + .btn-warning:focus, .btn-warning:active:focus, .btn-warning.active:focus, .show > .btn-warning.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.25rem var(--body-box-shadow-color);
+}
+.btn-warning:disabled, .btn-warning.disabled {
+  color: var(--body-text-color);
+  background-color: var(--body-leading-color);
+  border-color: var(--body-border-color);
+}
+
 
 /*tooltip section*/
 .mytooltip {

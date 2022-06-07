@@ -106,9 +106,13 @@
                     {% if message_to_students is None %}
                         <i>brak wiadomości do uczniów</i>
                     {% else %}
-                        {% for msg in message_to_students %}
-                            {{ msg }}<br>
-                        {% endfor %}
+                        <div class="d-flex justify-content-start">
+                            <div class="border border-1 border-warning rounded-3 px-3 py-1" style="background-color: #fff8">
+                                {% for msg in message_to_students %}
+                                    {{ msg }}<br>
+                                {% endfor %}
+                            </div>
+                        </div>
                     {% endif %}
                 </td>
             </tr>

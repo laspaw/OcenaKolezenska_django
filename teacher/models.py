@@ -68,7 +68,7 @@ class Questionnaire(models.Model):
             return None
         now = pendulum.now()
         deadline = pendulum.instance(deadline)
-        return f"{deadline.in_timezone(now.timezone).strftime('%Y-%m-%d %H:%M')} {now.tzname()} {now.timezone_name}"
+        return f"{deadline.in_timezone(now.timezone).strftime('%Y-%m-%d %H:%M')} {now.tzname()}"
 
     @staticmethod
     def check_overdue(deadline):
@@ -82,6 +82,7 @@ class Questionnaire(models.Model):
             return None
         else:
             return deadline
+
 
 class Student(models.Model):
     name = models.CharField(max_length=32)
@@ -102,6 +103,14 @@ class Student(models.Model):
             if mask_last_name:
                 temp[0] = temp[0][:1] + '*' * (len(temp[0]) - 1)
             return_list.append(temp[1] + ' ' + temp[0])
+        return return_list
+
+    @staticmethod
+    def get_students_list_for_modify(class_id):
+        return_list = ''
+        for student in Student.objects.filter(classid_id=class_id):
+            first_name, last_name = student.name.split(' ')
+            return_list += last_name + ' ' + first_name + '\n'
         return return_list
 
     def __str__(self):

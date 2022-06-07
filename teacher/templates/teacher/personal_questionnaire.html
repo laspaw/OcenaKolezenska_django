@@ -15,15 +15,15 @@
                 <tr>
                     <td>
                         <div class="py-3">
-                            <p>
+                            <p class="center">
                                 Ta ankieta jest przeznaczona dla ucznia: <b>{{ student_name }}</b><br>
                                 Jeżeli nie jesteś tym uczniem, nie wypełniaj tej ankiety i zgłoś pomyłkę nauczycielowi.<br>
                                 {% if deadline is not None %}
                                     {% if is_overdue %}
                                         <b class="warning">Termin wypełnienia ankiety minął {{ deadline }}</b><br>
                                     {% else %}
-                                        Ankieta jest otwarta do {{ deadline }}
-                                        <u>Gdy skończysz, nie zapomnij kliknąć przycisk "Zapisz odpowiedzi"</u><br>
+                                        Ankieta jest otwarta do {{ deadline }}<br>
+                                        <u>Gdy skończysz, nie zapomnij kliknąć <b>Zapisz odpowiedzi</b></u><br>
                                     {% endif %}
                                 {% endif %}
                                     {% if is_closed %}

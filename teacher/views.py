@@ -136,16 +136,18 @@ def modify_students(request, class_id):
         review_students_list = Student.cleanup_and_convert_review_students_text_to_list(
             review_students_text, request.POST.get('mask_lastnames', False))
         if 'save' in request.POST:
-            # for student in review_students_list:
-                # data = {
-                #     'name': student,
-                #     'personal_questionnaire_id': 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20)),
-                #     'classid_id': class_id,
-                # }
-                # Student.objects.create(**data)
+            if form.is_valid():
+                Student.objects.filter(classid_id=class_id).delete()
+                for student in review_students_list:
+                    data = {
+                        'name': student,
+                        'personal_questionnaire_id': 'qID' + ''.join(random.choices(string.ascii_letters + string.digits, k=20)),
+                        'classid_id': class_id,
+                    }
+                    Student.objects.create(**data)
             return redirect('teacher:show_class', class_id=class_id)
     if request.method == "GET":
-        form = AddStudentsForm(initial={'students': '\n'.join([student.name for student in Student.objects.filter(classid_id=class_id)])})
+        form = AddStudentsForm(initial={'students': Student.get_students_list_for_modify(class_id)})
     return render(request, "teacher/add_students.html", {'form': form, 'review_students_list': review_students_list} | icons)
 
 
